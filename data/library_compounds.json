@@ -1,0 +1,1370 @@
+[
+  {
+    "name": "(2R,3S,4S,5S,6R)-2-(hydroxymethyl)-6-(4-nitrophenoxy)oxane-3,4,5-triol",
+    "cas": "10357-27-4",
+    "smiles": "C1C([N+]([O-])=O)=CC=C(O[C@@H]2O[C@@H](CO)[C@H](O)[C@@H](O)[C@H]2O)C=1",
+    "formula": "C12H15NO8"
+  },
+  {
+    "name": "(3,4-Ethylenedioxy)aniline",
+    "cas": "22013-33-8",
+    "smiles": "C1COC2=C(O1)C=CC(=C2)N",
+    "formula": "C8H9NO2"
+  },
+  {
+    "name": "(S)-(-)-2,2'-Bis(diphenylphosphino)-1,1'-binaphthyl",
+    "cas": "76189-56-5",
+    "smiles": "C1=CC=C(C=C1)P(C2=CC=CC=C2)C3=C(C4=CC=CC=C4C=C3)C5=C(C=CC6=CC=CC=C65)P(C7=CC=CC=C7)C8=CC=CC=C8",
+    "formula": "C44H32P2"
+  },
+  {
+    "name": "(S)-(+)-2-Amino-2-phenylethanol",
+    "cas": "20989-17-7",
+    "smiles": "C1=CC=C(C=C1)[C@@H](CO)N",
+    "formula": "C8H11NO"
+  },
+  {
+    "name": "1-(3-Dimethylaminopropyl)-3-ethylcarbodiimide HCl (EDC.HCl)",
+    "cas": "25952-53-8",
+    "smiles": "CCN=C=NCCCN(C)C.Cl",
+    "formula": "C8H18ClN3"
+  },
+  {
+    "name": "1-Hydroxybenzotriazole hydrate",
+    "cas": "123333-53-9",
+    "smiles": "C1=CC=C2C(=C1)N=NN2O.O",
+    "formula": "C6H7N3O2"
+  },
+  {
+    "name": "1-Methoxy-4-nitronaphthalene",
+    "cas": "4900-63-4",
+    "smiles": "COC1=CC=C(C2=CC=CC=C21)[N+](=O)[O-]",
+    "formula": "C11H9NO3"
+  },
+  {
+    "name": "1-Methylpiperazine",
+    "cas": "109-01-3",
+    "smiles": "CN1CCNCC1",
+    "formula": "C5H12N2"
+  },
+  {
+    "name": "1-naphthalen-2-ylpiperazine",
+    "cas": "57536-91-1",
+    "smiles": "C1CN(CCN1)C2=CC3=CC=CC=C3C=C2",
+    "formula": "C14H16N2"
+  },
+  {
+    "name": "1-Nitrohexane",
+    "cas": "646-14-0",
+    "smiles": "CCCCCC[N+](=O)[O-]",
+    "formula": "C6H13NO2"
+  },
+  {
+    "name": "1-Nonyne",
+    "cas": "3452-09-3",
+    "smiles": "CCCCCCCC#C",
+    "formula": "C9H16"
+  },
+  {
+    "name": "1,2-Dibromoethane",
+    "cas": "106-93-4",
+    "smiles": "C(CBr)Br",
+    "formula": "C2H4Br2"
+  },
+  {
+    "name": "1,2-Diethoxycyclobutenedione",
+    "cas": "5231-87-8",
+    "smiles": "CCOC1=C(C(=O)C1=O)OCC",
+    "formula": "C8H10O4"
+  },
+  {
+    "name": "1,2-Dimethoxybenzene",
+    "cas": "91-16-7",
+    "smiles": "COC1=CC=CC=C1OC",
+    "formula": "C8H10O2"
+  },
+  {
+    "name": "1,2-Phenylene diamine",
+    "cas": "95-54-5",
+    "smiles": "C1=CC=C(C(=C1)N)N",
+    "formula": "C6H8N2"
+  },
+  {
+    "name": "1,2,3,4-Tetrahydroquinoline",
+    "cas": "635-46-1",
+    "smiles": "C1CC2=CC=CC=C2NC1",
+    "formula": "C9H11N"
+  },
+  {
+    "name": "1,4-Cyclohexanedione",
+    "cas": "637-88-7",
+    "smiles": "C1CC(=O)CCC1=O",
+    "formula": "C6H8O2"
+  },
+  {
+    "name": "1,4-Dioxane",
+    "cas": "123-91-1",
+    "smiles": "C1COCCO1",
+    "formula": "C4H8O2"
+  },
+  {
+    "name": "1,8-Diazabicyclo[5.4.0]undec-7-ene",
+    "cas": "6674-22-2",
+    "smiles": "C1CCC2=NCCCN2CC1",
+    "formula": "C9H16N2"
+  },
+  {
+    "name": "1,8-Napthalic anhydride",
+    "cas": "81-84-5",
+    "smiles": "C1=CC2=C3C(=C1)C(=O)OC(=O)C3=CC=C2",
+    "formula": "C12H6O3"
+  },
+  {
+    "name": "1H-pyrazole",
+    "cas": "288-13-1",
+    "smiles": "C1=CNN=C1",
+    "formula": "C3H4N2"
+  },
+  {
+    "name": "2-(aminomethyl)pyridine",
+    "cas": "3731-01-9",
+    "smiles": "N1C=CC=CC=1CN",
+    "formula": "C6H8N2"
+  },
+  {
+    "name": "2-Aminobenzonitrile",
+    "cas": "1885-29-6",
+    "smiles": "C1=CC=C(C(=C1)C#N)N",
+    "formula": "C7H6N2"
+  },
+  {
+    "name": "2-Aminobenzotrifluoride",
+    "cas": "88-17-5",
+    "smiles": "C1=CC=C(C(=C1)C(F)(F)F)N",
+    "formula": "C7H6F3N"
+  },
+  {
+    "name": "2-Aminophenol",
+    "cas": "95-55-6",
+    "smiles": "C1=CC=C(C(=C1)N)O",
+    "formula": "C6H7NO"
+  },
+  {
+    "name": "2-bromoaniline",
+    "cas": "615-36-1",
+    "smiles": "C1=CC=C(C(=C1)N)Br",
+    "formula": "C6H6BrN"
+  },
+  {
+    "name": "2-bromothiophene",
+    "cas": "1003-09-4",
+    "smiles": "C1=CSC(=C1)Br",
+    "formula": "C4H3BrS"
+  },
+  {
+    "name": "2-Chloroaniline",
+    "cas": "95-51-2",
+    "smiles": "C1=CC=C(C(=C1)N)Cl",
+    "formula": "C6H6ClN"
+  },
+  {
+    "name": "2-Chlorobenzaldehyde",
+    "cas": "89-98-5",
+    "smiles": "C1=CC=C(C(=C1)C=O)Cl",
+    "formula": "C7H5ClO"
+  },
+  {
+    "name": "2-Dicyclohexylphosphino-2',4',6'-tri-iso-propyl-1,1'-biphenyl (Xphos)",
+    "cas": "564483-18-7",
+    "smiles": "CC(C1C=C(C(C)C)C(C2C(P(C3CCCCC3)C3CCCCC3)=CC=CC=2)=C(C(C)C)C=1)C",
+    "formula": "C33H49P"
+  },
+  {
+    "name": "2-Fluoroaniline",
+    "cas": "348-54-9",
+    "smiles": "C1=CC=C(C(=C1)N)F",
+    "formula": "C6H6FN"
+  },
+  {
+    "name": "2-fluorobenzylbromide",
+    "cas": "446-48-0",
+    "smiles": "C1=CC=C(C(=C1)CBr)F",
+    "formula": "C7H6BrF"
+  },
+  {
+    "name": "2-Furoyl chloride",
+    "cas": "527-69-5",
+    "smiles": "C1=COC(=C1)C(=O)Cl",
+    "formula": "C5H3ClO2"
+  },
+  {
+    "name": "2-Hydroxy-5-methoxybenzaldehyde",
+    "cas": "672-13-9",
+    "smiles": "COC1=CC(=C(C=C1)O)C=O",
+    "formula": "C8H8O3"
+  },
+  {
+    "name": "2-Iodoaniline",
+    "cas": "615-43-0",
+    "smiles": "C1=CC=C(C(=C1)N)I",
+    "formula": "C6H6IN"
+  },
+  {
+    "name": "2-Nitroaniline",
+    "cas": "88-74-4",
+    "smiles": "C1=CC=C(C(=C1)N)[N+](=O)[O-]",
+    "formula": "C6H6N2O2"
+  },
+  {
+    "name": "2,2-Dimethyl-1,3-dioxane-4,6-dione",
+    "cas": "2033-24-1",
+    "smiles": "O=C1OC(C)(C)OC(C1)=O",
+    "formula": "C6H8O4"
+  },
+  {
+    "name": "2,2'-Dinaphthylamine",
+    "cas": "532-18-3",
+    "smiles": "C1=CC=C2C=C(C=CC2=C1)NC3=CC4=CC=CC=C4C=C3",
+    "formula": "C20H15N"
+  },
+  {
+    "name": "2,3-Dichloro-5,6-dicyanobenzoquinone (DDQ)",
+    "cas": "84-58-2",
+    "smiles": "C(#N)C1=C(C(=O)C(=C(C1=O)Cl)Cl)C#N",
+    "formula": "C8Cl2N2O2"
+  },
+  {
+    "name": "2,3-Dihydrofuran",
+    "cas": "1191-99-7",
+    "smiles": "C1COC=C1",
+    "formula": "C4H6O"
+  },
+  {
+    "name": "2,4-Thiazolidinedione",
+    "cas": "2295-31-0",
+    "smiles": "C1C(=O)NC(=O)S1",
+    "formula": "C3H3NO2S"
+  },
+  {
+    "name": "2,4,6-Trimethylaniline",
+    "cas": "88-05-1",
+    "smiles": "CC1=CC(=C(C(=C1)C)N)C",
+    "formula": "C9H13N"
+  },
+  {
+    "name": "2,5-Dihydroxybenzaldehyde",
+    "cas": "1194-98-5",
+    "smiles": "C1=CC(=C(C=C1O)C=O)O",
+    "formula": "C7H6O3"
+  },
+  {
+    "name": "2'-Hydroxyacetophenone",
+    "cas": "118-93-4",
+    "smiles": "CC(C1=CC=CC=C1O)=O",
+    "formula": "C8H8O2"
+  },
+  {
+    "name": "3 A molecular sieves",
+    "cas": "308080-99-1",
+    "smiles": "CC.CC.CCC.CC.CCC(CC)(C)C.CC.CC.CC.CC.CC.CC.CC.CCC.CC(C(CC)(CC)CC)C",
+    "formula": "C43H114"
+  },
+  {
+    "name": "3-Aminobenzonitrile",
+    "cas": "2237-30-1",
+    "smiles": "C1=CC(=CC(=C1)N)C#N",
+    "formula": "C7H6N2"
+  },
+  {
+    "name": "3-aminobenzotrifluoride",
+    "cas": "98-16-8",
+    "smiles": "C1=CC(=CC(=C1)N)C(F)(F)F",
+    "formula": "C7H6F3N"
+  },
+  {
+    "name": "3-Aminophenol",
+    "cas": "591-27-5",
+    "smiles": "C1=CC(=CC(=C1)O)N",
+    "formula": "C6H7NO"
+  },
+  {
+    "name": "3-Bromo-4-pyridinecarboxaldehyde",
+    "cas": "70201-43-3",
+    "smiles": "C1=CN=CC(=C1C=O)Br",
+    "formula": "C6H4BrNO"
+  },
+  {
+    "name": "3-Bromoaniline",
+    "cas": "591-19-5",
+    "smiles": "C1=CC(=CC(=C1)Br)N",
+    "formula": "C6H6BrN"
+  },
+  {
+    "name": "3-Bromobenzaldehyde",
+    "cas": "3132-99-8",
+    "smiles": "C1=CC(=CC(=C1)Br)C=O",
+    "formula": "C7H5BrO"
+  },
+  {
+    "name": "3-Bromobenzylamine hydrochloride",
+    "cas": "39959-54-1",
+    "smiles": "C1=CC(=CC(=C1)Br)CN.Cl",
+    "formula": "C7H9BrClN"
+  },
+  {
+    "name": "3-Bromobenzylmagnesium bromide (0.25 M in Ether)",
+    "cas": "107549-22-4",
+    "smiles": "[CH2-]C1=CC(=CC=C1)Br.[Mg+2].[Br-]",
+    "formula": "C7H6Br2Mg"
+  },
+  {
+    "name": "3-Chloro-4-methoxybenzylamine hydrochloride",
+    "cas": "41965-95-1",
+    "smiles": "COC1=C(C=C(C=C1)CN)Cl.Cl",
+    "formula": "C8H11Cl2NO"
+  },
+  {
+    "name": "3-Chloroaniline",
+    "cas": "108-42-9",
+    "smiles": "C1=CC(=CC(=C1)Cl)N",
+    "formula": "C6H6ClN"
+  },
+  {
+    "name": "3-Chlorobenzylamine",
+    "cas": "4152-90-3",
+    "smiles": "C1=CC(=CC(=C1)Cl)CN",
+    "formula": "C7H8ClN"
+  },
+  {
+    "name": "3-Chloroperoxybenzoic acid (mCPBA)",
+    "cas": "937-14-4",
+    "smiles": "C1=CC(=CC(=C1)Cl)C(=O)OO",
+    "formula": "C7H5ClO3"
+  },
+  {
+    "name": "3-Fluoro benzaldehyde",
+    "cas": "456-48-4",
+    "smiles": "C1=CC(=CC(=C1)F)C=O",
+    "formula": "C7H5FO"
+  },
+  {
+    "name": "3-Fluoroaniline",
+    "cas": "372-19-0",
+    "smiles": "C1=CC(=CC(=C1)F)N",
+    "formula": "C6H6FN"
+  },
+  {
+    "name": "3-Iodoaniline",
+    "cas": "626-01-7",
+    "smiles": "C1=CC(=CC(=C1)I)N",
+    "formula": "C6H6IN"
+  },
+  {
+    "name": "3-Methoxyaniline",
+    "cas": "536-90-3",
+    "smiles": "COC1=CC=CC(=C1)N",
+    "formula": "C7H9NO"
+  },
+  {
+    "name": "3-Nitroaniline",
+    "cas": "99-09-2",
+    "smiles": "C1=CC(=CC(=C1)[N+](=O)[O-])N",
+    "formula": "C6H6N2O2"
+  },
+  {
+    "name": "3-Phenoxybenzyl alcohol",
+    "cas": "13826-35-2",
+    "smiles": "C1=CC=C(C=C1)OC2=CC=CC(=C2)CO",
+    "formula": "C13H12O2"
+  },
+  {
+    "name": "3,4-(Methylenedioxy)aniline",
+    "cas": "14268-66-7",
+    "smiles": "C1OC2=C(O1)C=C(C=C2)N",
+    "formula": "C7H7NO2"
+  },
+  {
+    "name": "3,4-Dimethoxy-3-cyclobutene-1,2-dione",
+    "cas": "5222-73-1",
+    "smiles": "COC1=C(C(=O)C1=O)OC",
+    "formula": "C6H6O4"
+  },
+  {
+    "name": "3,5-bis (Trifluoromethyl) aniline",
+    "cas": "328-74-5",
+    "smiles": "C1=C(C=C(C=C1C(F)(F)F)N)C(F)(F)F",
+    "formula": "C8H5F6N"
+  },
+  {
+    "name": "4-(4,4,5,5-Tetramethyl-1,3,2-dioxaborolan-2-yl)aniline",
+    "cas": "214360-73-3",
+    "smiles": "B1(OC(C(O1)(C)C)(C)C)C2=CC=C(C=C2)N",
+    "formula": "C12H18BNO2"
+  },
+  {
+    "name": "4-(Methylsulfonyl)aniline",
+    "cas": "5470-49-5",
+    "smiles": "CS(=O)(=O)C1=CC=C(C=C1)N",
+    "formula": "C7H9NO2S"
+  },
+  {
+    "name": "4-(tert-Butyl)-o-phenylenediamine",
+    "cas": "68176-57-8",
+    "smiles": "CC(C)(C)C1=CC(=C(C=C1)N)N",
+    "formula": "C10H16N2"
+  },
+  {
+    "name": "4-(trifluoromethyl)aniline",
+    "cas": "455-14-1",
+    "smiles": "C1=CC(=CC=C1C(F)(F)F)N",
+    "formula": "C7H6F3N"
+  },
+  {
+    "name": "4-Aminobenzoic acid",
+    "cas": "150-13-0",
+    "smiles": "C1=CC(=CC=C1C(=O)O)N",
+    "formula": "C7H7NO2"
+  },
+  {
+    "name": "4-Aminobenzonitrile",
+    "cas": "873-74-5",
+    "smiles": "C1=CC(N)=CC=C1C#N",
+    "formula": "C7H6N2"
+  },
+  {
+    "name": "4-Aminobenzyl alcohol",
+    "cas": "623-04-1",
+    "smiles": "C1=CC(=CC=C1CO)N",
+    "formula": "C7H9NO"
+  },
+  {
+    "name": "4-Aminophenol",
+    "cas": "123-30-8",
+    "smiles": "C1=CC(=CC=C1N)O",
+    "formula": "C6H7NO"
+  },
+  {
+    "name": "4-Bromo-1,2-benzenediamine",
+    "cas": "1575-37-7",
+    "smiles": "C1=CC(=C(C=C1Br)N)N",
+    "formula": "C6H7BrN2"
+  },
+  {
+    "name": "4-bromo-1,4-napthalic anhydride",
+    "cas": "81-86-7",
+    "smiles": "C1=CC2=C(C=CC3=C2C(=C1)C(=O)OC3=O)Br",
+    "formula": "C12H5BrO3"
+  },
+  {
+    "name": "4-Bromo-N-methylbenzylamine",
+    "cas": "699-03-6",
+    "smiles": "CNCC1=CC=C(C=C1)Br",
+    "formula": "C8H10BrN"
+  },
+  {
+    "name": "4-bromoaniline",
+    "cas": "106-40-1",
+    "smiles": "NC1=CC=C(Br)C=C1",
+    "formula": "C6H6BrN"
+  },
+  {
+    "name": "4-Bromobenzenesulfonyl chloride",
+    "cas": "98-58-8",
+    "smiles": "C1=CC(=CC=C1S(=O)(=O)Cl)Br",
+    "formula": "C6H4BrClO2S"
+  },
+  {
+    "name": "4-Bromobenzylamine",
+    "cas": "3959-07-7",
+    "smiles": "C1=CC(=CC=C1CN)Br",
+    "formula": "C7H8BrN"
+  },
+  {
+    "name": "4-Bromoindole",
+    "cas": "52488-36-5",
+    "smiles": "C1=CC2=C(C=CN2)C(=C1)Br",
+    "formula": "C8H6BrN"
+  },
+  {
+    "name": "4-Chloroaniline",
+    "cas": "106-47-8",
+    "smiles": "C1=CC(=CC=C1N)Cl",
+    "formula": "C6H6ClN"
+  },
+  {
+    "name": "4-Chlorobenzylamine",
+    "cas": "104-86-9",
+    "smiles": "C1=CC(=CC=C1CN)Cl",
+    "formula": "C7H8ClN"
+  },
+  {
+    "name": "4-Dimethylaminopyridine (DMAP)",
+    "cas": "1122-58-3",
+    "smiles": "CN(C)C1=CC=NC=C1",
+    "formula": "C7H10N2"
+  },
+  {
+    "name": "4-fluoroaniline",
+    "cas": "371-40-4",
+    "smiles": "C1=CC(=CC=C1N)F",
+    "formula": "C6H6FN"
+  },
+  {
+    "name": "4-Hydroxybenzylamine",
+    "cas": "696-60-6",
+    "smiles": "C1=CC(=CC=C1CN)O",
+    "formula": "C7H9NO"
+  },
+  {
+    "name": "4-iodoaniline",
+    "cas": "540-37-4",
+    "smiles": "C1=CC(=CC=C1N)I",
+    "formula": "C6H6IN"
+  },
+  {
+    "name": "4-Methoxy-N-methylaniline",
+    "cas": "5961-59-1",
+    "smiles": "CNC1=CC=C(C=C1)OC",
+    "formula": "C8H11NO"
+  },
+  {
+    "name": "4-Methoxybenzyl chloride",
+    "cas": "824-94-2",
+    "smiles": "COC1=CC=C(C=C1)CCl",
+    "formula": "C8H9ClO"
+  },
+  {
+    "name": "4-Nitroaniline",
+    "cas": "100-01-6",
+    "smiles": "C1=CC(=CC=C1N)[N+](=O)[O-]",
+    "formula": "C6H6N2O2"
+  },
+  {
+    "name": "4-phenoxyaniline",
+    "cas": "139-59-3",
+    "smiles": "C1=CC=C(C=C1)OC2=CC=C(C=C2)N",
+    "formula": "C12H11NO"
+  },
+  {
+    "name": "4-tert-Butylaniline",
+    "cas": "769-92-6",
+    "smiles": "CC(C)(C)C1=CC=C(C=C1)N",
+    "formula": "C10H15N"
+  },
+  {
+    "name": "4,4-Dimethyldiphenylamine",
+    "cas": "620-93-9",
+    "smiles": "CC1=CC=C(C=C1)NC2=CC=C(C=C2)C",
+    "formula": "C14H15N"
+  },
+  {
+    "name": "4,4'-Dimethoxydiphenylamine",
+    "cas": "101-70-2",
+    "smiles": "COC1=CC=C(C=C1)NC2=CC=C(C=C2)OC",
+    "formula": "C14H15NO2"
+  },
+  {
+    "name": "4,5-dibromobenzene-1,2-diamine",
+    "cas": "49764-63-8",
+    "smiles": "C1=C(C(=CC(=C1Br)Br)N)N",
+    "formula": "C6H6Br2N2"
+  },
+  {
+    "name": "4,7-Dibromo-2,1,3-benzothiadiazole",
+    "cas": "15155-41-6",
+    "smiles": "C1=C(C2=NSN=C2C(=C1)Br)Br",
+    "formula": "C6H2Br2N2S"
+  },
+  {
+    "name": "8-Bromo-2,3-dihydro-4(1H)-quinolinone",
+    "cas": "38470-29-0",
+    "smiles": "C1CNC2=C(C1=O)C=CC=C2Br",
+    "formula": "C9H8BrNO"
+  },
+  {
+    "name": "9-Borabicyclo[3.3.1]nonane (9-BBN) (0.5 M in THF)",
+    "cas": "280-64-8",
+    "smiles": "B1C2CCCC1CCC2",
+    "formula": "C8H15B"
+  },
+  {
+    "name": "9-Bromofluorene",
+    "cas": "1940-57-4",
+    "smiles": "C1=CC=C2C(=C1)C(C3=CC=CC=C32)Br",
+    "formula": "C13H9Br"
+  },
+  {
+    "name": "9-Fluorenylmethyl chloroformate (fmoc Chloride)",
+    "cas": "28920-43-6",
+    "smiles": "C1=CC=C2C(=C1)C(C3=CC=CC=C32)COC(=O)Cl",
+    "formula": "C15H11ClO2"
+  },
+  {
+    "name": "Acetonitrile",
+    "cas": "75-05-8",
+    "smiles": "CC#N",
+    "formula": "C2H3N"
+  },
+  {
+    "name": "Acetophenone",
+    "cas": "98-86-2",
+    "smiles": "CC(=O)C1=CC=CC=C1",
+    "formula": "C8H8O"
+  },
+  {
+    "name": "Allyl bromide",
+    "cas": "106-95-6",
+    "smiles": "C=CCBr",
+    "formula": "C3H5Br"
+  },
+  {
+    "name": "Aluminum chloride, anhydrous",
+    "cas": "7446-70-0",
+    "smiles": "[Al](Cl)(Cl)Cl",
+    "formula": "AlCl3"
+  },
+  {
+    "name": "Aluminum oxide",
+    "cas": "1344-28-1",
+    "smiles": "O=[Al]O[Al]=O",
+    "formula": "Al2O3"
+  },
+  {
+    "name": "Ammonium acetate",
+    "cas": "631-61-8",
+    "smiles": "CC([O-])=O.[NH4+]",
+    "formula": "C2H7NO2"
+  },
+  {
+    "name": "Aniline",
+    "cas": "62-53-3",
+    "smiles": "C1=CC=C(C=C1)N",
+    "formula": "C6H7N"
+  },
+  {
+    "name": "Azetidine hydrochloride",
+    "cas": "36520-39-5",
+    "smiles": "C1CNC1.Cl",
+    "formula": "C3H8ClN"
+  },
+  {
+    "name": "Benzaldehyde",
+    "cas": "100-52-7",
+    "smiles": "C1=CC=C(C=C1)C=O",
+    "formula": "C7H6O"
+  },
+  {
+    "name": "Benzenesulfonyl chloride",
+    "cas": "98-09-9",
+    "smiles": "C1=CC=C(C=C1)S(=O)(=O)Cl",
+    "formula": "C6H5ClO2S"
+  },
+  {
+    "name": "Benzoyl chloride",
+    "cas": "98-88-4",
+    "smiles": "C1=CC=C(C=C1)C(=O)Cl",
+    "formula": "C7H5ClO"
+  },
+  {
+    "name": "Benzoyl peroxide",
+    "cas": "94-36-0",
+    "smiles": "C1=CC=C(C=C1)C(=O)OOC(=O)C2=CC=CC=C2",
+    "formula": "C14H10O4"
+  },
+  {
+    "name": "Benzyl bromide",
+    "cas": "100-39-0",
+    "smiles": "C1=CC=C(C=C1)CBr",
+    "formula": "C7H7Br"
+  },
+  {
+    "name": "Benzylamine",
+    "cas": "100-46-9",
+    "smiles": "C1=CC=C(C=C1)CN",
+    "formula": "C7H9N"
+  },
+  {
+    "name": "Biphenyl-4-sulfonyl chloride",
+    "cas": "1623-93-4",
+    "smiles": "C1=CC=C(C=C1)C2=CC=C(C=C2)S(=O)(=O)Cl",
+    "formula": "C12H9ClO2S"
+  },
+  {
+    "name": "Bis(dibenzylideneacetone)palladium(0) (Pd(dba)2)",
+    "cas": "32005-36-0",
+    "smiles": "C1=CC=C(C=C1)/C=C/C(=O)/C=C/C2=CC=CC=C2.C1=CC=C(C=C1)/C=C/C(=O)/C=C/C2=CC=CC=C2.[Pd]",
+    "formula": "C34H28O2Pd"
+  },
+  {
+    "name": "Boron tribromide",
+    "cas": "10294-33-4",
+    "smiles": "B(Br)(Br)Br",
+    "formula": "BBr3"
+  },
+  {
+    "name": "Bromobenzene",
+    "cas": "108-86-1",
+    "smiles": "C1C=CC(Br)=CC=1",
+    "formula": "C6H5Br"
+  },
+  {
+    "name": "Carbon tetrabromide",
+    "cas": "558-13-4",
+    "smiles": "C(Br)(Br)(Br)Br",
+    "formula": "CBr4"
+  },
+  {
+    "name": "Cesium carbonate",
+    "cas": "534-17-8",
+    "smiles": "C(=O)([O-])[O-].[Cs+].[Cs+]",
+    "formula": "CCs2O3"
+  },
+  {
+    "name": "Chloroform D",
+    "cas": "865-49-6",
+    "smiles": "[2H]C(Cl)(Cl)Cl",
+    "formula": "CDCl3"
+  },
+  {
+    "name": "Chlorosulfonic acid",
+    "cas": "7790-94-5",
+    "smiles": "OS(=O)(=O)Cl",
+    "formula": "ClHO3S"
+  },
+  {
+    "name": "Chlorotrimethylsilane",
+    "cas": "75-77-4",
+    "smiles": "C[Si](C)(C)Cl",
+    "formula": "C3H9ClSi"
+  },
+  {
+    "name": "cis-2,6-Dimethylmorpholine",
+    "cas": "6485-55-8",
+    "smiles": "C[C@@H]1CNC[C@@H](O1)C",
+    "formula": "C6H13NO"
+  },
+  {
+    "name": "copper(II) chloride hydrate",
+    "cas": "10125-13-0",
+    "smiles": "O.O.Cl[Cu]Cl",
+    "formula": "Cl2CuH4O2"
+  },
+  {
+    "name": "Cyclohexane-1,2-diamine",
+    "cas": "694-83-7",
+    "smiles": "C1CCC(C(C1)N)N",
+    "formula": "C6H14N2"
+  },
+  {
+    "name": "Cyclopentyl methyl  ether",
+    "cas": "5614-37-9",
+    "smiles": "COC1CCCC1",
+    "formula": "C6H12O"
+  },
+  {
+    "name": "DCE",
+    "cas": "107-06-2",
+    "smiles": "C(CCl)Cl",
+    "formula": "C2H4Cl2"
+  },
+  {
+    "name": "Dichloromethane",
+    "cas": "75-09-2",
+    "smiles": "C(Cl)Cl",
+    "formula": "CH2Cl2"
+  },
+  {
+    "name": "diethyl ether",
+    "cas": "60-29-7",
+    "smiles": "CCOCC",
+    "formula": "C4H10O"
+  },
+  {
+    "name": "Diisopropylamine",
+    "cas": "108-18-9",
+    "smiles": "CC(C)NC(C)C",
+    "formula": "C6H15N"
+  },
+  {
+    "name": "Dimethylformamide",
+    "cas": "68-12-2",
+    "smiles": "CN(C=O)C",
+    "formula": "C3H7NO"
+  },
+  {
+    "name": "Dimethylsulfoxide",
+    "cas": "67-68-5",
+    "smiles": "CS(=O)C",
+    "formula": "C2H6OS"
+  },
+  {
+    "name": "Dimethylsulphoxide D6 TMS",
+    "cas": "2206-27-1",
+    "smiles": "[2H]C([2H])([2H])S(=O)C([2H])([2H])[2H]",
+    "formula": "C2D6OS"
+  },
+  {
+    "name": "diphenylamine",
+    "cas": "122-39-4",
+    "smiles": "C1=CC=C(C=C1)NC2=CC=CC=C2",
+    "formula": "C12H11N"
+  },
+  {
+    "name": "Diphenyliodonium hexafluorophosphate",
+    "cas": "58109-40-3",
+    "smiles": "C1=CC=C(C=C1)[I+]C2=CC=CC=C2.F[P-](F)(F)(F)(F)F",
+    "formula": "C12H10F6IP"
+  },
+  {
+    "name": "Ethyl 2,2-diethoxyacetate",
+    "cas": "6065-82-3",
+    "smiles": "CCOC(C(=O)OCC)OCC",
+    "formula": "C8H16O4"
+  },
+  {
+    "name": "Ethyl acetate",
+    "cas": "141-78-6",
+    "smiles": "CCOC(=O)C",
+    "formula": "C4H8O2"
+  },
+  {
+    "name": "Ethylamine hydrochloride",
+    "cas": "557-66-4",
+    "smiles": "CCN.Cl",
+    "formula": "C2H8ClN"
+  },
+  {
+    "name": "Fluorene",
+    "cas": "86-73-7",
+    "smiles": "C1C2=CC=CC=C2C3=CC=CC=C31",
+    "formula": "C13H10"
+  },
+  {
+    "name": "Fluorene-2-carboxaldehyde",
+    "cas": "30084-90-3",
+    "smiles": "C1C2=CC=CC=C2C3=C1C=C(C=C3)C=O",
+    "formula": "C14H10O"
+  },
+  {
+    "name": "Furan",
+    "cas": "110-00-9",
+    "smiles": "C1=COC=C1",
+    "formula": "C4H4O"
+  },
+  {
+    "name": "HATU",
+    "cas": "148893-10-1",
+    "smiles": "CN(/C(/N1N=[N+]([O-])C2N=CC=CC1=2)=[N+](/C)\\C)C.F[P-](F)(F)(F)(F)F",
+    "formula": "C10H15F6N6OP"
+  },
+  {
+    "name": "Hydrazine hydrate",
+    "cas": "7803-57-8",
+    "smiles": "NN.O",
+    "formula": "H6N2O"
+  },
+  {
+    "name": "Hydrochloric Acid / Dioxane (3.7 - 4.3 M)",
+    "cas": "7647-01-0",
+    "smiles": "Cl",
+    "formula": "ClH"
+  },
+  {
+    "name": "Hydrocinnamoyl chloride",
+    "cas": "645-45-4",
+    "smiles": "C1=CC=C(C=C1)CCC(=O)Cl",
+    "formula": "C9H9ClO"
+  },
+  {
+    "name": "Hydroquinone",
+    "cas": "123-31-9",
+    "smiles": "C1=CC(=CC=C1O)O",
+    "formula": "C6H6O2"
+  },
+  {
+    "name": "Imidazole",
+    "cas": "288-32-4",
+    "smiles": "C1NC=NC=1",
+    "formula": "C3H4N2"
+  },
+  {
+    "name": "Indane-5-sulfonyl chloride",
+    "cas": "52205-85-3",
+    "smiles": "C1CC2=C(C1)C=C(C=C2)S(=O)(=O)Cl",
+    "formula": "C9H9ClO2S"
+  },
+  {
+    "name": "Indium",
+    "cas": "7440-74-6",
+    "smiles": "[In]",
+    "formula": "In"
+  },
+  {
+    "name": "Indole",
+    "cas": "120-72-9",
+    "smiles": "C1=CC=C2C(=C1)C=CN2",
+    "formula": "C8H7N"
+  },
+  {
+    "name": "Iodomethane",
+    "cas": "74-88-4",
+    "smiles": "CI",
+    "formula": "CH3I"
+  },
+  {
+    "name": "Iron",
+    "cas": "7439-89-6",
+    "smiles": "[Fe]",
+    "formula": "Fe"
+  },
+  {
+    "name": "Lithium iodide, anhydrous",
+    "cas": "10377-51-2",
+    "smiles": "[Li+].[I-]",
+    "formula": "ILi"
+  },
+  {
+    "name": "m-toluidine",
+    "cas": "108-44-1",
+    "smiles": "CC1=CC(=CC=C1)N",
+    "formula": "C7H9N"
+  },
+  {
+    "name": "Maleimide",
+    "cas": "541-59-3",
+    "smiles": "C1=CC(=O)NC1=O",
+    "formula": "C4H3NO2"
+  },
+  {
+    "name": "Malononitrile",
+    "cas": "109-77-3",
+    "smiles": "C(C#N)C#N",
+    "formula": "C3H2N2"
+  },
+  {
+    "name": "Methanesulfonyl chloride",
+    "cas": "124-63-0",
+    "smiles": "CS(=O)(=O)Cl",
+    "formula": "CH3ClO2S"
+  },
+  {
+    "name": "Methanol dry",
+    "cas": "67-56-1",
+    "smiles": "CO",
+    "formula": "CH4O"
+  },
+  {
+    "name": "Methyl thioglycolate",
+    "cas": "2365-48-2",
+    "smiles": "COC(=O)CS",
+    "formula": "C3H6O2S"
+  },
+  {
+    "name": "Methyllithium (3.1 M in Dimethoxyethane)",
+    "cas": "917-54-4",
+    "smiles": "[Li+].[CH3-]",
+    "formula": "CH3Li"
+  },
+  {
+    "name": "Morpholine",
+    "cas": "110-91-8",
+    "smiles": "C1COCCN1",
+    "formula": "C4H9NO"
+  },
+  {
+    "name": "N-Bromosuccinimide",
+    "cas": "128-08-5",
+    "smiles": "C1CC(=O)N(C1=O)Br",
+    "formula": "C4H4BrNO2"
+  },
+  {
+    "name": "n-Butyllithium (2 M in Cyclohexane)",
+    "cas": "109-72-8",
+    "smiles": "[Li+].CCC[CH2-]",
+    "formula": "C4H9Li"
+  },
+  {
+    "name": "N-Iodo succinamide",
+    "cas": "516-12-1",
+    "smiles": "C1CC(=O)N(C1=O)I",
+    "formula": "C4H4INO2"
+  },
+  {
+    "name": "N-Methylaniline",
+    "cas": "100-61-8",
+    "smiles": "CNC1=CC=CC=C1",
+    "formula": "C7H9N"
+  },
+  {
+    "name": "N-Methylbenzylamine",
+    "cas": "103-67-3",
+    "smiles": "CNCC1=CC=CC=C1",
+    "formula": "C8H11N"
+  },
+  {
+    "name": "N-Phenyl-1,2-phenylenediamine",
+    "cas": "534-85-0",
+    "smiles": "C1=CC=C(C=C1)NC2=CC=CC=C2N",
+    "formula": "C12H12N2"
+  },
+  {
+    "name": "N,N-Diisopropylethylamine",
+    "cas": "7087-68-5",
+    "smiles": "CCN(C(C)C)C(C)C",
+    "formula": "C8H19N"
+  },
+  {
+    "name": "N,N'-Diisopropylethylenediamine",
+    "cas": "4013-94-9",
+    "smiles": "CC(C)NCCNC(C)C",
+    "formula": "C8H20N2"
+  },
+  {
+    "name": "N,N'-Dimethyl-1,3-propanediamine",
+    "cas": "111-33-1",
+    "smiles": "CNCCCNC",
+    "formula": "C5H14N2"
+  },
+  {
+    "name": "N1-Methylbenzene-1,2-diamine",
+    "cas": "4760-34-3",
+    "smiles": "CNC1=CC=CC=C1N",
+    "formula": "C7H10N2"
+  },
+  {
+    "name": "o-Anisidine",
+    "cas": "90-04-0",
+    "smiles": "COC1=CC=CC=C1N",
+    "formula": "C7H9NO"
+  },
+  {
+    "name": "o-Bromobenzyl alcohol",
+    "cas": "18982-54-2",
+    "smiles": "C1=CC=C(C(=C1)CO)Br",
+    "formula": "C7H7BrO"
+  },
+  {
+    "name": "o-Toluidine",
+    "cas": "95-53-4",
+    "smiles": "CC1=CC=CC=C1N",
+    "formula": "C7H9N"
+  },
+  {
+    "name": "O-Xylene",
+    "cas": "95-47-6",
+    "smiles": "CC1=CC=CC=C1C",
+    "formula": "C8H10"
+  },
+  {
+    "name": "Oxalyl chloride",
+    "cas": "79-37-8",
+    "smiles": "C(=O)(C(=O)Cl)Cl",
+    "formula": "C2Cl2O2"
+  },
+  {
+    "name": "p-Anisaldehyde",
+    "cas": "123-11-5",
+    "smiles": "COC1=CC=C(C=C1)C=O",
+    "formula": "C8H8O2"
+  },
+  {
+    "name": "p-Anisidine",
+    "cas": "104-94-9",
+    "smiles": "COC1=CC=C(C=C1)N",
+    "formula": "C7H9NO"
+  },
+  {
+    "name": "p-Toluidine",
+    "cas": "106-49-0",
+    "smiles": "CC1=CC=C(C=C1)N",
+    "formula": "C7H9N"
+  },
+  {
+    "name": "Palladium acetate",
+    "cas": "3375-31-3",
+    "smiles": "CC(=O)[O-].CC(=O)[O-].[Pd+2]",
+    "formula": "C4H6O4Pd"
+  },
+  {
+    "name": "Phenyl boronic acid",
+    "cas": "98-80-6",
+    "smiles": "B(C1=CC=CC=C1)(O)O",
+    "formula": "C6H7BO2"
+  },
+  {
+    "name": "Phosphorus tribromide",
+    "cas": "7789-60-8",
+    "smiles": "P(Br)(Br)Br",
+    "formula": "Br3P"
+  },
+  {
+    "name": "Piperazine",
+    "cas": "110-85-0",
+    "smiles": "C1CNCCN1",
+    "formula": "C4H10N2"
+  },
+  {
+    "name": "Piperidine",
+    "cas": "110-89-4",
+    "smiles": "C1CCNCC1",
+    "formula": "C5H11N"
+  },
+  {
+    "name": "Platinum(IV) oxide",
+    "cas": "1314-15-4",
+    "smiles": "O=[Pt]=O",
+    "formula": "O2Pt"
+  },
+  {
+    "name": "Potassium polysulfide",
+    "cas": "37199-66-9",
+    "smiles": "",
+    "formula": "nan"
+  },
+  {
+    "name": "Potassium tert-butoxide",
+    "cas": "864-47-4",
+    "smiles": "CC(C)(C)[O-].[K+]",
+    "formula": "C4H9KO"
+  },
+  {
+    "name": "Potassium tert-butoxide",
+    "cas": "865-47-4",
+    "smiles": "CC(C)(C)[O-].[K+]",
+    "formula": "C4H9KO"
+  },
+  {
+    "name": "Propargyl Bromide",
+    "cas": "106-96-7",
+    "smiles": "C#CCBr",
+    "formula": "C3H3Br"
+  },
+  {
+    "name": "Pyridine",
+    "cas": "110-86-1",
+    "smiles": "C1=CC=NC=C1",
+    "formula": "C5H5N"
+  },
+  {
+    "name": "Pyridinium chlorochromate",
+    "cas": "26299-14-9",
+    "smiles": "[H+]N1C=CC=CC=1.[Cl-][Cr](=O)(=O)=O",
+    "formula": "nan"
+  },
+  {
+    "name": "Pyrrole",
+    "cas": "109-97-9",
+    "smiles": "",
+    "formula": "nan"
+  },
+  {
+    "name": "Pyrrole",
+    "cas": "109-97-7",
+    "smiles": "C1=CNC=C1",
+    "formula": "C4H5N"
+  },
+  {
+    "name": "sec-Butyllithium (1.4 M in Cyclohexane)",
+    "cas": "598-30-1",
+    "smiles": "[Li+].CC[CH-]C",
+    "formula": "C4H9Li"
+  },
+  {
+    "name": "Sodium acetate",
+    "cas": "127-09-3",
+    "smiles": "CC(=O)[O-].[Na+]",
+    "formula": "C2H3NaO2"
+  },
+  {
+    "name": "Sodium borohydride",
+    "cas": "16940-66-2",
+    "smiles": "[BH4-].[Na+]",
+    "formula": "BH4Na"
+  },
+  {
+    "name": "Sodium hydride",
+    "cas": "7646-69-7",
+    "smiles": "[H-].[Na+]",
+    "formula": "HNa"
+  },
+  {
+    "name": "Sodium iodide",
+    "cas": "7681-82-5",
+    "smiles": "[Na+].[I-]",
+    "formula": "INa"
+  },
+  {
+    "name": "Sodium methoxide",
+    "cas": "124-41-4",
+    "smiles": "C[O-].[Na+]",
+    "formula": "CH3NaO"
+  },
+  {
+    "name": "Sodium tert-butoxide",
+    "cas": "865-48-5",
+    "smiles": "CC(C)(C)[O-].[Na+]",
+    "formula": "C4H9NaO"
+  },
+  {
+    "name": "Spermidine",
+    "cas": "124-20-9",
+    "smiles": "C(CCNCCCN)CN",
+    "formula": "C7H19N3"
+  },
+  {
+    "name": "Spermine",
+    "cas": "71-44-3",
+    "smiles": "C(CCNCCCN)CNCCCN",
+    "formula": "C10H26N4"
+  },
+  {
+    "name": "Squaric acid",
+    "cas": "2892-51-5",
+    "smiles": "C1(=C(C(=O)C1=O)O)O",
+    "formula": "C4H2O4"
+  },
+  {
+    "name": "Stannous chloride",
+    "cas": "7772-99-8",
+    "smiles": "Cl[Sn]Cl",
+    "formula": "Cl2Sn"
+  },
+  {
+    "name": "tert-Butyl 1-piperazinecarboxylate",
+    "cas": "57260-71-6",
+    "smiles": "CC(C)(C)OC(=O)N1CCNCC1",
+    "formula": "C9H18N2O2"
+  },
+  {
+    "name": "tert-Butyllithium (1.7 M in Pentane)",
+    "cas": "594-19-4",
+    "smiles": "[Li+].C[C-](C)C",
+    "formula": "C4H9Li"
+  },
+  {
+    "name": "Tetrabutylammonium bromide",
+    "cas": "1643-19-2",
+    "smiles": "CCCC[N+](CCCC)(CCCC)CCCC.[Br-]",
+    "formula": "C16H36BrN"
+  },
+  {
+    "name": "Tetrahydrofuran Dry",
+    "cas": "109-99-9",
+    "smiles": "O1CCCC1",
+    "formula": "C4H8O"
+  },
+  {
+    "name": "Tetrakis(triphenylphosphine)palladium(0)",
+    "cas": "14221-01-3",
+    "smiles": "C1=CC=C(C=C1)P(C2=CC=CC=C2)C3=CC=CC=C3.C1=CC=C(C=C1)P(C2=CC=CC=C2)C3=CC=CC=C3.C1=CC=C(C=C1)P(C2=CC=CC=C2)C3=CC=CC=C3.C1=CC=C(C=C1)P(C2=CC=CC=C2)C3=CC=CC=C3.[Pd]",
+    "formula": "C72H60P4Pd"
+  },
+  {
+    "name": "Thiazolidine",
+    "cas": "504-78-9",
+    "smiles": "C1CSCN1",
+    "formula": "C3H7NS"
+  },
+  {
+    "name": "Thiomorpholine",
+    "cas": "123-90-0",
+    "smiles": "C1CSCCN1",
+    "formula": "C4H9NS"
+  },
+  {
+    "name": "Thionyl chloride",
+    "cas": "7719-09-7",
+    "smiles": "O=S(Cl)Cl",
+    "formula": "Cl2OS"
+  },
+  {
+    "name": "Thiophene-2-sulfonyl chloride",
+    "cas": "16629-19-9",
+    "smiles": "C1=CSC(=C1)S(=O)(=O)Cl",
+    "formula": "C4H3ClO2S2"
+  },
+  {
+    "name": "Toluene",
+    "cas": "108-88-3",
+    "smiles": "CC1C=CC=CC=1",
+    "formula": "C7H8"
+  },
+  {
+    "name": "trans-2,5-Dimethylpiperazine",
+    "cas": "2815-34-1",
+    "smiles": "C[C@@H]1CN[C@H](CN1)C",
+    "formula": "C6H14N2"
+  },
+  {
+    "name": "Triethyl orthoformate",
+    "cas": "122-51-0",
+    "smiles": "CCOC(OCC)OCC",
+    "formula": "C7H16O3"
+  },
+  {
+    "name": "Triethylamine",
+    "cas": "121-44-8",
+    "smiles": "CCN(CC)CC",
+    "formula": "C6H15N"
+  },
+  {
+    "name": "Trifluoroacetic acid",
+    "cas": "76-05-1",
+    "smiles": "C(=O)(C(F)(F)F)O",
+    "formula": "C2HF3O2"
+  },
+  {
+    "name": "Trifluoroacetic anhydride",
+    "cas": "407-25-0",
+    "smiles": "C(OC(C(F)(F)F)=O)(C(F)(F)F)=O",
+    "formula": "C4F6O3"
+  },
+  {
+    "name": "Trimethylsilyl iodide",
+    "cas": "16029-98-4",
+    "smiles": "C[Si](C)(C)I",
+    "formula": "C3H9ISi"
+  },
+  {
+    "name": "Triphenylchloromethane",
+    "cas": "76-83-5",
+    "smiles": "C1=CC=C(C=C1)C(C2=CC=CC=C2)(C3=CC=CC=C3)Cl",
+    "formula": "C19H15Cl"
+  },
+  {
+    "name": "Triphenylphosphine",
+    "cas": "603-35-0",
+    "smiles": "C1C=C(P(C2C=CC=CC=2)C2=CC=CC=C2)C=CC=1",
+    "formula": "C18H15P"
+  },
+  {
+    "name": "Vanillin",
+    "cas": "121-33-5",
+    "smiles": "COC1=C(C=CC(=C1)C=O)O",
+    "formula": "C8H8O3"
+  },
+  {
+    "name": "Xanthene",
+    "cas": "92-83-1",
+    "smiles": "C1C2=CC=CC=C2OC3=CC=CC=C31",
+    "formula": "C13H10O"
+  },
+  {
+    "name": "Zinc",
+    "cas": "7440-88-8",
+    "smiles": "",
+    "formula": "nan"
+  },
+  {
+    "name": "Zinc dichloride",
+    "cas": "7646-85-7",
+    "smiles": "Cl[Zn]Cl",
+    "formula": "Cl2Zn"
+  },
+  {
+    "name": "Zinc trifluoromethanesulfonate",
+    "cas": "54010-75-2",
+    "smiles": "C(F)(F)(F)S(=O)(=O)[O-].C(F)(F)(F)S(=O)(=O)[O-].[Zn+2]",
+    "formula": "C2F6O6S2Zn"
+  }
+]

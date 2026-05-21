@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chemdem — AI-Powered Reaction Prediction</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif; }
+    html { scroll-behavior: smooth; }
+
+    .blue { color: #000DFF; }
+
+    .btn-primary {
+      background: #111;
+      color: #fff;
+      border-radius: 999px;
+      padding: 18px 36px;
+      font-size: 17px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #000DFF; }
+
+    .btn-secondary {
+      background: transparent;
+      color: #111;
+      border: 1.5px solid #d1d5db;
+      border-radius: 999px;
+      padding: 18px 36px;
+      font-size: 17px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: #000DFF; color: #000DFF; }
+
+    .demo-card {
+      background: #efefef;
+      border-radius: 20px;
+      padding: 16px;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .tab-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .tab-active {
+      background: #000DFF;
+      color: white;
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .tab-inactive {
+      color: #374151;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 4px;
+    }
+
+    .inner-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px 28px;
+    }
+
+    .success-pill {
+      background: #dcfce7;
+      color: #16a34a;
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .yield-track {
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .yield-fill {
+      height: 100%;
+      width: 78%;
+      background: #000DFF;
+      border-radius: 999px;
+    }
+
+    /* Section styles */
+    .section-label {
+      display: inline-block;
+      background: #f3f4f6;
+      color: #6b7280;
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .feature-card {
+      border: 1.5px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px;
+      background: white;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .feature-card:hover {
+      box-shadow: 0 4px 24px rgba(37,99,235,0.10);
+      border-color: #bfdbfe;
+    }
+
+    .reaction-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      background: white;
+      transition: border-color 0.2s;
+    }
+    .reaction-row:hover { border-color: #000DFF; }
+
+    .reaction-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #eff6ff;
+      color: #000DFF;
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #eff6ff;
+      color: #000DFF;
+      font-weight: 700;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 32px 24px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 16px;
+      background: white;
+    }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); z-index: 50; }
+
+    .login-btn .login-arrow { opacity: 0; transform: translateX(-6px); transition: opacity 0.2s ease, transform 0.2s ease; position: absolute; }
+    .login-btn .login-icon  { opacity: 1; transition: opacity 0.2s ease; }
+    .login-btn:hover .login-arrow { opacity: 1; transform: translateX(0); }
+    .login-btn:hover .login-icon  { opacity: 0; }
+
+    .nav-pill-container { position: relative; display: flex; align-items: center; gap: 8px; font-size: 16px; background: #e9e9e9; border-radius: 999px; padding: 6px 10px; }
+    .sliding-pill { position: absolute; background: #000DFF; border-radius: 999px; transition: left 0.3s cubic-bezier(0.4,0,0.2,1), width 0.3s cubic-bezier(0.4,0,0.2,1); pointer-events: none; top: 6px; bottom: 6px; }
+    .nav-link { position: relative; z-index: 1; text-decoration: none; color: #374151; padding: 8px 20px; border-radius: 999px; transition: color 0.2s ease; cursor: pointer; }
+    .nav-link.active { color: #fff; }
+
+    .yield-row { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+
+    @keyframes fadeInLeft {
+      from { opacity:0; transform:translateX(-14px); }
+      to   { opacity:1; transform:translateX(0); }
+    }
+    @keyframes fadeInRight {
+      from { opacity:0; transform:translateX(14px); }
+      to   { opacity:1; transform:translateX(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity:0; }
+      to   { opacity:1; }
+    }
+    @keyframes drawPath {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes slideUp {
+      from { opacity:0; transform:translateY(12px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .mol-anim { opacity:0; animation-fill-mode:forwards; animation-duration:0.5s; animation-timing-function:ease; }
+    .m1 { animation-name:fadeInLeft;  animation-delay:0.2s; }
+    .m2 { animation-name:fadeIn;      animation-delay:0.8s; }
+    .m3 { animation-name:fadeInLeft;  animation-delay:1.3s; }
+    .m4 { animation-name:fadeIn;      animation-delay:1.9s; }
+    .m5 { animation-name:fadeInRight; animation-delay:2.4s; }
+    .results-reveal { opacity:0; }
+    .results-reveal.in-view { animation: slideUp 0.5s ease forwards; }
+
+    @keyframes popIn {
+      0%   { opacity:0; transform:scale(0.7); }
+      70%  { transform:scale(1.08); }
+      100% { opacity:1; transform:scale(1); }
+    }
+    @keyframes fillBar {
+      from { width: 0%; }
+      to   { width: 78%; }
+    }
+    .success-pill-anim { opacity:0; }
+    .success-pill-anim.in-view { animation: popIn 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards; }
+    .yield-fill-anim { width:0; }
+    .yield-fill-anim.in-view { animation: fillBar 1s ease 0.55s forwards; }
+
+    /* ─── Global box model + overflow guard ─── */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { overflow-x: hidden; }
+
+    /* ─── Hamburger button (hidden on desktop) ─── */
+    .hamburger-btn {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 6px;
+      border-radius: 8px;
+    }
+    .hamburger-btn span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: #111;
+      border-radius: 2px;
+      transition: transform 0.25s ease, opacity 0.2s ease;
+    }
+    .hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ─── Mobile slide-in menu ─── */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 99;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .menu-overlay.open { opacity: 1; visibility: visible; }
+
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 75vw;
+      max-width: 300px;
+      background: #fff;
+      border-radius: 20px 0 0 20px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: -4px 0 40px rgba(0,0,0,0.12);
+      overflow-y: auto;
+    }
+    .mobile-menu.open { transform: translateX(0); }
+
+    .mobile-menu-header {
+      display: flex;
+      justify-content: flex-end;
+      padding: 20px 20px 8px;
+    }
+    .menu-close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .menu-close-btn:hover { background: #f3f4f6; }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+      padding: 4px 16px 32px;
+      gap: 2px;
+    }
+    .mobile-nav-links a {
+      display: block;
+      text-decoration: none;
+      color: #111;
+      font-size: 18px;
+      font-weight: 500;
+      padding: 14px 16px;
+      border-radius: 12px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .mobile-nav-links a:hover, .mobile-nav-links a:active {
+      color: #000DFF;
+      background: #f0f1ff;
+    }
+
+    /* ─── Mobile breakpoint ─── */
+    @media (max-width: 768px) {
+      /* Nav */
+      .nav-pill-container { display: none !important; }
+      .desktop-login { display: none !important; }
+      .hamburger-btn { display: flex !important; }
+      nav > div { padding: 14px 20px !important; }
+
+      /* Hero — left-aligned */
+      #home {
+        padding: 88px 20px 52px !important;
+        text-align: left !important;
+      }
+      #home h1 {
+        font-size: clamp(54px, 16vw, 72px) !important;
+        letter-spacing: -0.5px !important;
+        line-height: 1.08 !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+      #home > p {
+        font-size: 14px !important;
+        max-width: 100% !important;
+        text-align: left !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-bottom: 28px !important;
+      }
+
+      /* CTA buttons — full-width stacked */
+      .hero-btns {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+      }
+      .hero-btns a {
+        width: 100% !important;
+        max-width: none !important;
+        justify-content: center !important;
+        padding: 17px 24px !important;
+        font-size: 16px !important;
+      }
+
+      /* Demo card wrapper */
+      #home > div:last-child { margin-top: 40px !important; }
+
+      /* Demo card */
+      .demo-card { padding: 10px !important; border-radius: 18px !important; }
+      .inner-card { padding: 14px 16px !important; }
+
+      /* Molecule row — scale SVGs down to fit on one line */
+      .mol-row {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        justify-content: center !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 20px 10px !important;
+        gap: 8px !important;
+        min-height: 90px !important;
+        align-items: center !important;
+      }
+      .mol-row::-webkit-scrollbar { display: none; }
+      .mol-row > * { flex-shrink: 0; }
+
+      /* Scale each molecule SVG down */
+      .m1 svg { height: 62px !important; width: auto !important; }
+      .m3 svg { height: 62px !important; width: auto !important; }
+      .m5 svg { height: 56px !important; width: auto !important; }
+      .m4 svg { height: 15px !important; width: 50px !important; }
+      .m2    { font-size: 20px !important; line-height: 1 !important; }
+
+      /* Result rows — keep on one line, remove fixed label width */
+      .result-row {
+        gap: 8px !important;
+        flex-wrap: wrap !important;
+        margin-bottom: 10px !important;
+        align-items: center !important;
+      }
+      .result-label {
+        min-width: unset !important;
+        font-size: 13px !important;
+        white-space: nowrap;
+      }
+      .confidence-text { font-size: 12px !important; line-height: 1.5 !important; }
+
+      /* Other sections */
+      #how-it-works, #features, #reactions, #cta { padding: 56px 20px !important; }
+      .reactions-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+
+      /* Footer */
+      footer { padding: 28px 20px !important; }
+      .footer-row { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+    }
+
+    @media (max-width: 390px) {
+      #home { padding: 82px 16px 44px !important; }
+      #home h1 { font-size: clamp(46px, 14.5vw, 60px) !important; }
+      #how-it-works, #features, #reactions, #cta { padding: 48px 16px !important; }
+      footer { padding: 24px 16px !important; }
+    }
+
+    /* ─── Page load entrance ─── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .load-nav {
+      animation: fadeDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .load-1 { animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
+    .load-2 { animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both; }
+    .load-3 { animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both; }
+    .load-4 { animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both; }
+
+    /* ─── Scroll reveal ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
+    }
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body style="background:#fff; color:#111; margin:0;">
+
+  <!-- NAV -->
+  <nav class="load-nav">
+    <div style="max-width:1100px; margin:0 auto; padding:18px 32px; display:flex; align-items:center; justify-content:space-between;">
+      <!-- Logo -->
+      <div>
+        <svg width="176" height="41" viewBox="0 0 141 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19.0029 12.0083L22.8101 8.20428M17.8117 21.3468L17.1844 17.586M9.65637 13.1984L13.4204 13.8252" stroke="#7D83FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M33.5288 24.1988C32.1687 24.1988 30.967 23.8954 29.9239 23.2885C28.8807 22.6816 28.0687 21.8306 27.4877 20.7356C26.9199 19.6406 26.636 18.3674 26.636 16.9161C26.636 15.8079 26.801 14.8118 27.1312 13.9279C27.4612 13.0308 27.93 12.2655 28.5374 11.6323C29.1448 10.9858 29.8711 10.4911 30.7162 10.148C31.5612 9.80501 32.4922 9.63348 33.509 9.63348C34.6181 9.63348 35.582 9.7918 36.4007 10.1084C37.2326 10.4251 37.9259 10.9 38.4805 11.5333C39.0351 12.1666 39.4444 12.9516 39.7085 13.8883L37.193 14.6601C36.9157 13.7762 36.4668 13.1033 35.8462 12.6415C35.2255 12.1798 34.4399 11.9489 33.4891 11.9489C32.644 11.9489 31.9112 12.1534 31.2906 12.5624C30.6832 12.9582 30.2078 13.5255 29.8645 14.2643C29.5344 15.0032 29.3693 15.8871 29.3693 16.9161C29.3693 17.9321 29.5344 18.816 29.8645 19.568C30.2078 20.3068 30.6897 20.8807 31.3104 21.2897C31.931 21.6855 32.6704 21.8834 33.5288 21.8834C34.453 21.8834 35.2255 21.6525 35.8462 21.1907C36.4668 20.729 36.9157 20.0561 37.193 19.1722L39.6887 19.944C39.4246 20.8675 39.0152 21.6459 38.4607 22.2792C37.9061 22.9125 37.2194 23.394 36.4007 23.7238C35.582 24.0405 34.6247 24.1988 33.5288 24.1988ZM41.324 23.8822V9.93033H43.78V14.8778C44.0573 14.4028 44.4336 14.04 44.909 13.7893C45.3975 13.5255 45.9654 13.3936 46.6124 13.3936C47.3651 13.3936 48.0187 13.5387 48.5733 13.8289C49.141 14.1192 49.5834 14.5678 49.9003 15.1746C50.2172 15.7683 50.3757 16.5401 50.3757 17.49V23.8822H47.9196V17.8067C47.9196 17.0415 47.7414 16.4742 47.3849 16.1048C47.0283 15.7354 46.5596 15.5506 45.9786 15.5506C45.3183 15.5506 44.7835 15.7683 44.3742 16.2037C43.9781 16.6391 43.78 17.246 43.78 18.0244V23.8822H41.324ZM57.0054 24.1196C55.9487 24.1196 55.0376 23.8954 54.2719 23.4468C53.506 22.9982 52.9118 22.365 52.4893 21.547C52.0799 20.729 51.8753 19.7725 51.8753 18.6774C51.8753 17.6352 52.0931 16.7182 52.5289 15.9267C52.9646 15.1351 53.5588 14.515 54.3115 14.0664C55.0772 13.6179 55.9423 13.3936 56.9063 13.3936C57.8571 13.3936 58.689 13.5914 59.402 13.9872C60.1151 14.383 60.6696 14.9438 61.0658 15.6694C61.4619 16.395 61.66 17.2592 61.66 18.2618C61.66 18.4466 61.653 18.6445 61.6402 18.8555C61.6402 19.0534 61.6268 19.2184 61.6006 19.3503H53.1033V17.6879H60.0556L59.2832 18.0046C59.2832 17.4109 59.1841 16.9096 58.9861 16.5006C58.8009 16.0916 58.5236 15.7881 58.1542 15.5902C57.7843 15.3792 57.3421 15.2736 56.8271 15.2736C56.3518 15.2736 55.916 15.3792 55.5199 15.5902C55.1366 15.7881 54.8395 16.1048 54.6284 16.5401C54.4171 16.9755 54.3115 17.523 54.3115 18.1827V19.0534C54.3115 20.0166 54.536 20.7752 54.9851 21.3293C55.4471 21.8702 56.1403 22.1407 57.0648 22.1407C57.6456 22.1407 58.1408 22.0153 58.5503 21.7646C58.9593 21.514 59.2896 21.1248 59.5407 20.597L61.4619 21.5272C61.1975 22.0813 60.8479 22.5562 60.4122 22.952C59.9764 23.3347 59.4679 23.6249 58.887 23.8228C58.3191 24.0207 57.6917 24.1196 57.0054 24.1196ZM63.1618 23.8822V13.631H65.4594V14.8976C65.7234 14.4095 66.1061 14.0401 66.6082 13.7894C67.1098 13.5255 67.704 13.3936 68.3908 13.3936C69.0771 13.3936 69.6713 13.5321 70.1734 13.8091C70.6884 14.073 71.0776 14.4622 71.342 14.9767C71.6193 14.4886 72.0219 14.106 72.5503 13.8289C73.0781 13.5387 73.6857 13.3936 74.3725 13.3936C75.1514 13.3936 75.8115 13.5387 76.3532 13.8289C76.8944 14.106 77.3039 14.515 77.5812 15.0559C77.8714 15.5969 78.0169 16.2631 78.0169 17.0547V23.8822H75.5609V17.6484C75.5609 16.9755 75.3955 16.461 75.0657 16.1048C74.7488 15.7354 74.3195 15.5506 73.7783 15.5506C73.1573 15.5506 72.6691 15.7618 72.3126 16.1839C71.9689 16.5929 71.7976 17.1734 71.7976 17.9254V23.8822H69.3416V17.6484C69.3416 16.9755 69.1831 16.461 68.8662 16.1048C68.5493 15.7354 68.12 15.5506 67.5788 15.5506C66.9712 15.5506 66.4894 15.7683 66.1329 16.2037C65.7892 16.6259 65.6179 17.213 65.6179 17.965V23.8822H63.1618Z" fill="black"/>
+          <path d="M84.0521 24.1197C83.2068 24.1197 82.4344 23.9086 81.7347 23.4864C81.0479 23.051 80.5002 22.431 80.0907 21.6261C79.6946 20.8214 79.4965 19.8649 79.4965 18.7566C79.4965 17.6484 79.6946 16.6985 80.0907 15.9069C80.4869 15.1021 81.0281 14.482 81.7149 14.0466C82.4146 13.6113 83.194 13.3936 84.0521 13.3936C84.4616 13.3936 84.8577 13.4464 85.2405 13.5519C85.6366 13.6575 86.0065 13.8224 86.3497 14.0466C86.6928 14.271 86.9835 14.5744 87.2212 14.957V9.93036H89.6772V23.8822H87.3598V22.4177C87.1355 22.8267 86.8449 23.1566 86.4883 23.4072C86.1452 23.6579 85.7619 23.836 85.3395 23.9416C84.93 24.0603 84.5012 24.1197 84.0521 24.1197ZM84.7057 22.0417C85.2073 22.0417 85.6564 21.923 86.0526 21.6855C86.4621 21.4349 86.779 21.0655 87.0033 20.5773C87.241 20.0892 87.3598 19.4823 87.3598 18.7566C87.3598 18.031 87.241 17.4241 87.0033 16.936C86.779 16.4478 86.4621 16.085 86.0526 15.8475C85.6564 15.5969 85.2073 15.4715 84.7057 15.4715C84.2041 15.4715 83.7486 15.5969 83.339 15.8475C82.9429 16.085 82.626 16.4478 82.3883 16.936C82.1506 17.4241 82.0318 18.031 82.0318 18.7566C82.0318 19.4823 82.1506 20.0892 82.3883 20.5773C82.626 21.0655 82.9429 21.4349 83.339 21.6855C83.7486 21.923 84.2041 22.0417 84.7057 22.0417ZM96.4061 24.1197C95.3499 24.1197 94.4388 23.8954 93.6728 23.4468C92.9067 22.9983 92.3125 22.365 91.8901 21.547C91.4806 20.729 91.2761 19.7725 91.2761 18.6775C91.2761 17.6352 91.494 16.7183 91.9298 15.9267C92.3655 15.1351 92.9597 14.515 93.7124 14.0664C94.4784 13.6179 95.343 13.3936 96.3071 13.3936C97.2578 13.3936 98.0897 13.5915 98.8027 13.9873C99.5158 14.3831 100.07 14.9438 100.466 15.6694C100.863 16.3951 101.061 17.2592 101.061 18.2619C101.061 18.4466 101.054 18.6445 101.041 18.8556C101.041 19.0535 101.028 19.2184 101.001 19.3503H92.5042V17.688H99.4563L98.6839 18.0046C98.6839 17.4109 98.5848 16.9096 98.3868 16.5006C98.2021 16.0916 97.9248 15.7881 97.5549 15.5902C97.185 15.3792 96.7428 15.2736 96.2278 15.2736C95.7525 15.2736 95.3167 15.3792 94.9206 15.5902C94.5378 15.7881 94.2407 16.1048 94.0293 16.5402C93.8178 16.9755 93.7124 17.5231 93.7124 18.1827V19.0535C93.7124 20.0166 93.9367 20.7752 94.3858 21.3293C94.8478 21.8703 95.541 22.1407 96.4655 22.1407C97.0463 22.1407 97.5415 22.0154 97.951 21.7647C98.3605 21.514 98.6903 21.1248 98.9414 20.5971L100.863 21.5272C100.599 22.0813 100.249 22.5563 99.8129 22.9521C99.3771 23.3347 98.8686 23.6249 98.2877 23.8228C97.7198 24.0207 97.0929 24.1197 96.4061 24.1197ZM102.563 23.8822V13.6311H104.86V14.8976C105.124 14.4095 105.507 14.0401 106.009 13.7894C106.511 13.5255 107.105 13.3936 107.792 13.3936C108.478 13.3936 109.073 13.5321 109.574 13.8092C110.089 14.0731 110.479 14.4622 110.743 14.9768C111.02 14.4886 111.423 14.106 111.951 13.829C112.479 13.5387 113.086 13.3936 113.773 13.3936C114.552 13.3936 115.213 13.5387 115.754 13.829C116.295 14.106 116.705 14.515 116.982 15.0559C117.273 15.5969 117.418 16.2631 117.418 17.0547V23.8822H114.962V17.6484C114.962 16.9755 114.797 16.461 114.466 16.1048C114.15 15.7354 113.72 15.5507 113.179 15.5507C112.559 15.5507 112.07 15.7618 111.713 16.1839C111.37 16.593 111.198 17.1734 111.198 17.9254V23.8822H108.742V17.6484C108.742 16.9755 108.584 16.461 108.267 16.1048C107.95 15.7354 107.521 15.5507 106.979 15.5507C106.372 15.5507 105.89 15.7684 105.534 16.2037C105.19 16.6259 105.019 17.213 105.019 17.965V23.8822H102.563Z" fill="#000DFF"/>
+          <path d="M22.3317 8.34784C23.0246 9.04019 24.148 9.04019 24.841 8.34784C25.5339 7.6555 25.5339 6.53302 24.841 5.84067C24.148 5.14832 23.0246 5.14832 22.3317 5.84067C21.6387 6.53302 21.6387 7.6555 22.3317 8.34784Z" fill="#000DFF" stroke="#000DFF" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16.9183 24.4807C17.6112 25.1731 18.7347 25.1731 19.4276 24.4807C20.1205 23.7884 20.1205 22.6659 19.4276 21.9735C18.7347 21.2812 17.6112 21.2812 16.9183 21.9735C16.2253 22.6659 16.2253 23.7884 16.9183 24.4807Z" fill="#000DFF" stroke="#7D83FF" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14.675 16.3324C15.8201 17.4766 17.6767 17.4766 18.8219 16.3324C19.967 15.1883 19.967 13.3332 18.8219 12.1891C17.6767 11.045 15.8201 11.045 14.675 12.1891C13.5299 13.3332 13.5299 15.1883 14.675 16.3324Z" stroke="#000DFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6.5197 14.452C7.21263 15.1443 8.33609 15.1443 9.02902 14.452C9.72195 13.7596 9.72195 12.6371 9.02902 11.9448C8.33609 11.2525 7.21263 11.2525 6.5197 11.9448C5.82677 12.6371 5.82677 13.7596 6.5197 14.452Z" fill="#000DFF" stroke="#000DFF" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <!-- Links -->
+      <div class="nav-pill-container" id="navPill">
+        <div class="sliding-pill" id="slidingPill"></div>
+        <a href="#" class="nav-link active" onclick="setActive(this)">Home</a>
+        <a href="#how-it-works" class="nav-link" onclick="setActive(this)">How it works</a>
+        <a href="#features" class="nav-link" onclick="setActive(this)">Features</a>
+        <a href="#reactions" class="nav-link" onclick="setActive(this)">Reactions</a>
+        <a href="#research" class="nav-link" onclick="setActive(this)">Research</a>
+      </div>
+      <!-- Login -->
+      <a href="#" class="login-btn desktop-login" style="background:#000DFF; color:#fff; border-radius:999px; padding:12px 32px; font-size:16px; font-weight:500; text-decoration:none; display:flex; align-items:center; gap:8px; position:relative;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='#000DFF'">
+        Login
+        <span style="display:flex; align-items:center; position:relative; width:18px; height:18px;">
+          <span class="login-icon" style="display:flex;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+          </span>
+          <span class="login-arrow" style="font-size:17px; display:flex;">↗</span>
+        </span>
+      </a>
+      <!-- Hamburger (mobile only) -->
+      <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- OVERLAY -->
+  <div class="menu-overlay" id="menuOverlay" onclick="closeMobileMenu()"></div>
+
+  <!-- MOBILE SLIDE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <button class="menu-close-btn" onclick="closeMobileMenu()" aria-label="Close menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="mobile-nav-links">
+      <a href="#" onclick="closeMobileMenu()">Home</a>
+      <a href="#how-it-works" onclick="closeMobileMenu()">How it works</a>
+      <a href="#features" onclick="closeMobileMenu()">Features</a>
+      <a href="#reactions" onclick="closeMobileMenu()">Reactions</a>
+      <a href="#research" onclick="closeMobileMenu()">Research</a>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <section id="home" style="padding: 160px 32px 80px; text-align:center;">
+    <h1 class="load-1" style="font-size: clamp(40px, 6vw, 68px); font-weight:400; line-height:1.1; letter-spacing:-1.5px; margin:0 0 20px; max-width:820px; margin-left:auto; margin-right:auto;">
+      <span style="color:#111; font-weight:500;">Predict</span> Chemical Reaction<br>
+      Outcomes Before You <span style="color:#000DFF; font-weight:500;">React</span>
+    </h1>
+    <p class="load-2" style="font-size:17px; color:#6b7280; max-width:520px; margin:0 auto 36px; line-height:1.7;">
+      Chemdem uses AI to predict reaction success and yield before you even start
+      — powered by real squarate-amide data and IBM RXN.
+    </p>
+    <div class="hero-btns load-3" style="display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;">
+      <a href="#cta" class="btn-primary">Request a demo <span style="font-size:16px;">↗</span></a>
+      <a href="#how-it-works" class="btn-secondary">See How It Works</a>
+    </div>
+
+    <!-- Demo Card -->
+    <div class="load-4" style="margin-top:60px; max-width:820px; margin-left:auto; margin-right:auto;">
+      <div style="background:#efefef; border-radius:24px; padding:16px;">
+
+        <!-- Tab bar -->
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; background:white; border-radius:999px; padding:6px 8px 6px 20px;">
+          <span style="font-size:15px; font-weight:600; color:#111;">Reaction Input</span>
+          <span style="background:#000DFF; color:#fff; border-radius:999px; padding:10px 26px; font-size:14px; font-weight:500;">Prediction</span>
+        </div>
+
+        <!-- Molecule card -->
+        <div class="mol-row" style="background:white; border-radius:16px; padding:36px 28px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; gap:18px; flex-wrap:wrap; min-height:160px;">
+
+          <!-- Reactant 1: OCH3 + Cl benzene (Group 27) -->
+          <div class="mol-anim m1">
+            <svg width="115" height="130" viewBox="0 0 95 107" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M51.7567 85.4054L69 95.3608" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M27.0811 39.9108L27.0811 20" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M27.3784 46.1622L46.9459 57.4595M27.3784 40.2162L3 54.2911V85.4054L27.3784 99.4803L51.7568 85.4054V54.2911L27.3784 40.2162Z" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M47.5947 81.2432L28.5676 92.2284" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M7.75671 80.6487V58.6487" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M14.3378 13.2158C13.4618 13.2158 12.7106 13.0212 12.0843 12.6318C11.458 12.2383 10.9756 11.6818 10.6371 10.9624C10.3028 10.243 10.1356 9.39665 10.1356 8.42334V8.41064C10.1356 7.42887 10.3049 6.5804 10.6434 5.86523C10.9862 5.15007 11.4707 4.59782 12.097 4.2085C12.7276 3.81917 13.4745 3.62451 14.3378 3.62451C15.2053 3.62451 15.9522 3.81917 16.5785 4.2085C17.209 4.59782 17.6935 5.15218 18.0321 5.87158C18.3706 6.58675 18.5399 7.43311 18.5399 8.41064V8.42334C18.5399 9.39665 18.3706 10.243 18.0321 10.9624C17.6978 11.6776 17.2154 12.2319 16.5848 12.6255C15.9585 13.019 15.2095 13.2158 14.3378 13.2158ZM14.3378 12.1621C14.9641 12.1621 15.5036 12.0076 15.9564 11.6987C16.4092 11.3898 16.7583 10.9561 17.0038 10.3975C17.2492 9.83464 17.3719 9.1766 17.3719 8.42334V8.41064C17.3719 7.64893 17.2492 6.98877 17.0038 6.43018C16.7583 5.87158 16.4092 5.43994 15.9564 5.13525C15.5036 4.83057 14.9641 4.67822 14.3378 4.67822C13.7157 4.67822 13.1782 4.83057 12.7254 5.13525C12.2726 5.43994 11.9214 5.87158 11.6717 6.43018C11.4263 6.98877 11.3036 7.64893 11.3036 8.41064V8.42334C11.3036 9.1766 11.4242 9.83464 11.6654 10.3975C11.9066 10.9561 12.2536 11.3898 12.7064 11.6987C13.1592 12.0076 13.703 12.1621 14.3378 12.1621ZM23.9484 13.2158C23.1189 13.2158 22.4016 13.0212 21.7965 12.6318C21.1914 12.2425 20.7237 11.6903 20.3937 10.9751C20.0678 10.2599 19.9049 9.41146 19.9049 8.42969V8.41699C19.9049 7.43099 20.0678 6.5804 20.3937 5.86523C20.7237 5.15007 21.1892 4.59782 21.7902 4.2085C22.3953 3.81917 23.1126 3.62451 23.942 3.62451C24.5852 3.62451 25.1692 3.75146 25.694 4.00537C26.2229 4.25505 26.6588 4.60417 27.0016 5.05273C27.3444 5.49707 27.5602 6.01123 27.649 6.59521L27.6427 6.60791H26.4938L26.4874 6.59521C26.3859 6.20166 26.2145 5.86312 25.9733 5.57959C25.732 5.29183 25.4379 5.06966 25.0909 4.91309C24.7482 4.75651 24.3652 4.67822 23.942 4.67822C23.358 4.67822 22.8502 4.83057 22.4186 5.13525C21.9912 5.43994 21.6611 5.87158 21.4283 6.43018C21.1956 6.98877 21.0792 7.65104 21.0792 8.41699V8.42969C21.0792 9.19141 21.1956 9.85156 21.4283 10.4102C21.6611 10.9688 21.9912 11.4004 22.4186 11.7051C22.8502 12.0098 23.3601 12.1621 23.9484 12.1621C24.3758 12.1621 24.763 12.0944 25.11 11.959C25.457 11.8193 25.749 11.6226 25.986 11.3687C26.2229 11.1105 26.388 10.8058 26.4811 10.4546L26.4938 10.4419H27.649V10.4546C27.5475 11.0132 27.3274 11.4998 26.9889 11.9146C26.6503 12.325 26.2208 12.6445 25.7003 12.873C25.184 13.1016 24.6001 13.2158 23.9484 13.2158ZM29.306 13V3.84033H30.4486V7.80127H35.476V3.84033H36.6185V13H35.476V8.82959H30.4486V13H29.306ZM41.6652 13.1523C41.0346 13.1523 40.4845 13.0444 40.0148 12.8286C39.5451 12.6128 39.1727 12.3166 38.8976 11.9399C38.6268 11.5633 38.4702 11.1338 38.4279 10.6514L38.4215 10.5752H39.5197L39.526 10.6387C39.5726 11.0872 39.7884 11.4533 40.1735 11.7368C40.5586 12.0203 41.0558 12.1621 41.6652 12.1621C42.0672 12.1621 42.4184 12.0923 42.7189 11.9526C43.0236 11.813 43.2606 11.6204 43.4298 11.375C43.5991 11.1253 43.6837 10.8397 43.6837 10.5181V10.5054C43.6837 9.94255 43.4954 9.5109 43.1188 9.21045C42.7464 8.90576 42.2386 8.75342 41.5954 8.75342H40.4464V7.78857H41.5446C41.9085 7.78857 42.2301 7.72087 42.5094 7.58545C42.7887 7.4458 43.0066 7.25749 43.1632 7.02051C43.3198 6.7793 43.3981 6.50635 43.3981 6.20166V6.18896C43.3981 5.86735 43.3304 5.5944 43.195 5.37012C43.0595 5.14583 42.8607 4.97445 42.5983 4.85596C42.3401 4.73747 42.0249 4.67822 41.6525 4.67822C41.2928 4.67822 40.9712 4.73958 40.6876 4.8623C40.4083 4.98079 40.1841 5.15218 40.0148 5.37646C39.8455 5.60075 39.744 5.86735 39.7101 6.17627L39.7038 6.23975H38.6056L38.612 6.17627C38.6627 5.67692 38.8193 5.24105 39.0817 4.86865C39.3483 4.49626 39.6995 4.20638 40.1354 3.99902C40.5755 3.79167 41.0812 3.68799 41.6525 3.68799C42.2365 3.68799 42.7443 3.78955 43.1759 3.99268C43.6118 4.19157 43.9482 4.46875 44.1852 4.82422C44.4264 5.17546 44.547 5.58382 44.547 6.04932V6.06201C44.547 6.43864 44.4645 6.77295 44.2995 7.06494C44.1344 7.35693 43.9059 7.60026 43.6139 7.79492C43.3219 7.98958 42.9855 8.12712 42.6046 8.20752V8.23291C43.2732 8.28792 43.8128 8.51432 44.2233 8.91211C44.638 9.30566 44.8454 9.82829 44.8454 10.48V10.4927C44.8454 11.0005 44.7078 11.4554 44.4328 11.8574C44.1577 12.2594 43.7811 12.5768 43.3029 12.8096C42.8247 13.0381 42.2788 13.1523 41.6652 13.1523Z" fill="black"/>
+              <path d="M77.6891 103.216C76.8597 103.216 76.1424 103.021 75.5372 102.632C74.9321 102.243 74.4645 101.69 74.1344 100.975C73.8085 100.26 73.6456 99.4115 73.6456 98.4297V98.417C73.6456 97.431 73.8085 96.5804 74.1344 95.8652C74.4645 95.1501 74.93 94.5978 75.5309 94.2085C76.136 93.8192 76.8533 93.6245 77.6827 93.6245C78.326 93.6245 78.9099 93.7515 79.4347 94.0054C79.9637 94.255 80.3995 94.6042 80.7423 95.0527C81.0851 95.4971 81.3009 96.0112 81.3898 96.5952L81.3834 96.6079H80.2345L80.2281 96.5952C80.1266 96.2017 79.9552 95.8631 79.714 95.5796C79.4728 95.2918 79.1787 95.0697 78.8317 94.9131C78.4889 94.7565 78.1059 94.6782 77.6827 94.6782C77.0988 94.6782 76.5909 94.8306 76.1593 95.1353C75.7319 95.4399 75.4018 95.8716 75.1691 96.4302C74.9363 96.9888 74.8199 97.651 74.8199 98.417V98.4297C74.8199 99.1914 74.9363 99.8516 75.1691 100.41C75.4018 100.969 75.7319 101.4 76.1593 101.705C76.5909 102.01 77.1009 102.162 77.6891 102.162C78.1165 102.162 78.5037 102.094 78.8507 101.959C79.1977 101.819 79.4897 101.623 79.7267 101.369C79.9637 101.111 80.1287 100.806 80.2218 100.455L80.2345 100.442H81.3898V100.455C81.2882 101.013 81.0682 101.5 80.7296 101.915C80.3911 102.325 79.9615 102.645 79.441 102.873C78.9248 103.102 78.3408 103.216 77.6891 103.216ZM82.9706 103V93.4404H84.0751V103H82.9706Z" fill="black"/>
+            </svg>
+          </div>
+
+          <!-- Plus -->
+          <div class="mol-anim m2" style="font-size:32px; color:#000DFF; font-weight:400; line-height:1;">+</div>
+
+          <!-- Reactant 2: Phenylboronic acid (Group 28) -->
+          <div class="mol-anim m3">
+            <svg width="68" height="125" viewBox="0 0 55 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M27.0811 39.9108L27.0811 20" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M27.3784 46.1622L46.9459 57.4595M27.3784 40.2162L3 54.2911V85.4054L27.3784 99.4803L51.7568 85.4054V54.2911L27.3784 40.2162Z" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M47.5947 81.2432L28.5676 92.2284" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M7.75671 80.6487V58.6487" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6.8917 13V11.9907H9.72275C10.4125 11.9907 10.9352 11.8532 11.2906 11.5781C11.6461 11.3031 11.8238 10.9032 11.8238 10.3784V10.3657C11.8238 10.0145 11.7413 9.72038 11.5763 9.4834C11.4112 9.24642 11.1637 9.06868 10.8336 8.9502C10.5077 8.83171 10.1015 8.77246 9.61484 8.77246H6.8917V7.78857H9.29111C9.98512 7.78857 10.5056 7.66585 10.8526 7.42041C11.2039 7.17497 11.3795 6.81104 11.3795 6.32861V6.31592C11.3795 5.85042 11.2208 5.49072 10.9034 5.23682C10.5903 4.97868 10.1502 4.84961 9.58311 4.84961H6.8917V3.84033H9.82432C10.3871 3.84033 10.8696 3.93343 11.2716 4.11963C11.6778 4.30583 11.9889 4.57031 12.2047 4.91309C12.4247 5.25163 12.5348 5.65365 12.5348 6.11914V6.13184C12.5348 6.44922 12.4628 6.74756 12.3189 7.02686C12.1793 7.30615 11.991 7.54102 11.754 7.73145C11.517 7.92188 11.2504 8.0446 10.9542 8.09961V8.20117C11.3731 8.25195 11.735 8.37679 12.0396 8.57568C12.3443 8.77458 12.5792 9.03271 12.7442 9.3501C12.9135 9.66325 12.9981 10.0208 12.9981 10.4229V10.4355C12.9981 10.9688 12.8733 11.4279 12.6236 11.813C12.3782 12.1938 12.0248 12.488 11.5636 12.6953C11.1023 12.8984 10.5458 13 9.89414 13H6.8917ZM6.32041 13V3.84033H7.46299V13H6.32041ZM16.7753 15.2852C16.3648 14.7393 16.0262 14.1595 15.7596 13.5459C15.493 12.9323 15.2941 12.2785 15.1629 11.5845C15.036 10.8905 14.9725 10.1499 14.9725 9.36279C14.9725 8.57568 15.036 7.83724 15.1629 7.14746C15.2899 6.45345 15.4867 5.79964 15.7533 5.18604C16.0199 4.5682 16.3605 3.98633 16.7753 3.44043H17.702C17.4735 3.73242 17.2598 4.10059 17.0609 4.54492C16.8662 4.98926 16.697 5.48014 16.5531 6.01758C16.4092 6.55078 16.2971 7.10514 16.2167 7.68066C16.1363 8.25195 16.0961 8.81266 16.0961 9.36279C16.0961 9.91715 16.1363 10.4821 16.2167 11.0576C16.2971 11.6289 16.4092 12.1833 16.5531 12.7207C16.697 13.2539 16.8662 13.7406 17.0609 14.1807C17.2598 14.625 17.4735 14.9932 17.702 15.2852H16.7753ZM23.1549 13.2158C22.2789 13.2158 21.5278 13.0212 20.9015 12.6318C20.2752 12.2383 19.7928 11.6818 19.4542 10.9624C19.1199 10.243 18.9528 9.39665 18.9528 8.42334V8.41064C18.9528 7.42887 19.122 6.5804 19.4606 5.86523C19.8033 5.15007 20.2879 4.59782 20.9142 4.2085C21.5447 3.81917 22.2916 3.62451 23.1549 3.62451C24.0224 3.62451 24.7693 3.81917 25.3956 4.2085C26.0262 4.59782 26.5107 5.15218 26.8492 5.87158C27.1878 6.58675 27.357 7.43311 27.357 8.41064V8.42334C27.357 9.39665 27.1878 10.243 26.8492 10.9624C26.5149 11.6776 26.0325 12.2319 25.402 12.6255C24.7757 13.019 24.0266 13.2158 23.1549 13.2158ZM23.1549 12.1621C23.7812 12.1621 24.3208 12.0076 24.7736 11.6987C25.2264 11.3898 25.5755 10.9561 25.8209 10.3975C26.0664 9.83464 26.1891 9.1766 26.1891 8.42334V8.41064C26.1891 7.64893 26.0664 6.98877 25.8209 6.43018C25.5755 5.87158 25.2264 5.43994 24.7736 5.13525C24.3208 4.83057 23.7812 4.67822 23.1549 4.67822C22.5328 4.67822 21.9954 4.83057 21.5426 5.13525C21.0898 5.43994 20.7386 5.87158 20.4889 6.43018C20.2434 6.98877 20.1207 7.64893 20.1207 8.41064V8.42334C20.1207 9.1766 20.2413 9.83464 20.4825 10.3975C20.7237 10.9561 21.0708 11.3898 21.5236 11.6987C21.9764 12.0076 22.5201 12.1621 23.1549 12.1621ZM29.0775 13V3.84033H30.2201V7.80127H35.2474V3.84033H36.39V13H35.2474V8.82959H30.2201V13H29.0775ZM38.923 15.2852H37.9962C38.2247 14.9932 38.4363 14.625 38.631 14.1807C38.8299 13.7406 39.0013 13.2539 39.1452 12.7207C39.289 12.1833 39.4012 11.6289 39.4816 11.0576C39.562 10.4821 39.6022 9.91715 39.6022 9.36279C39.6022 8.81266 39.562 8.25195 39.4816 7.68066C39.4012 7.10514 39.289 6.55078 39.1452 6.01758C39.0013 5.48014 38.8299 4.98926 38.631 4.54492C38.4363 4.10059 38.2247 3.73242 37.9962 3.44043H38.923C39.3377 3.98633 39.6784 4.5682 39.945 5.18604C40.2116 5.79964 40.4083 6.45345 40.5353 7.14746C40.6622 7.83724 40.7257 8.57568 40.7257 9.36279C40.7257 10.1499 40.6601 10.8905 40.5289 11.5845C40.402 12.2785 40.2052 12.9323 39.9386 13.5459C39.6762 14.1595 39.3377 14.7393 38.923 15.2852ZM43.0238 13V12.2129L46.1215 8.86133C46.5108 8.43815 46.8155 8.08903 47.0355 7.81396C47.2556 7.53467 47.4101 7.28288 47.4989 7.05859C47.5878 6.83431 47.6322 6.58887 47.6322 6.32227V6.30957C47.6322 5.98796 47.5624 5.7002 47.4228 5.44629C47.2831 5.19238 47.0842 4.99137 46.8261 4.84326C46.5679 4.69515 46.259 4.62109 45.8993 4.62109C45.5354 4.62109 45.2159 4.69727 44.9408 4.84961C44.6658 4.99772 44.452 5.20719 44.2997 5.47803C44.1474 5.74463 44.0712 6.05778 44.0712 6.41748L44.0648 6.43018L42.973 6.42383L42.9604 6.41748C42.9646 5.87581 43.0958 5.39551 43.3539 4.97656C43.612 4.55339 43.9675 4.22331 44.4203 3.98633C44.8731 3.74512 45.3915 3.62451 45.9755 3.62451C46.5087 3.62451 46.989 3.73665 47.4164 3.96094C47.8438 4.18099 48.1802 4.48356 48.4257 4.86865C48.6754 5.25374 48.8002 5.69385 48.8002 6.18896V6.20166C48.8002 6.54867 48.7388 6.88298 48.6161 7.20459C48.4976 7.5262 48.286 7.88379 47.9813 8.27734C47.6767 8.66667 47.2471 9.14697 46.6928 9.71826L44.3251 12.1621L44.6107 11.6353V12.1621L44.3314 11.9717H48.9525V13H43.0238Z" fill="black"/>
+            </svg>
+          </div>
+
+          <!-- Arrow (draws itself) -->
+          <div class="mol-anim m4">
+            <svg width="96" height="24" viewBox="0 0 96 24" fill="none">
+              <!-- Shaft draws left to right -->
+              <line x1="2" y1="12" x2="84" y2="12"
+                stroke="#111" stroke-width="1.8" stroke-linecap="round"
+                stroke-dasharray="82" stroke-dashoffset="82"
+                style="animation: drawPath 0.55s ease 1.9s forwards;"/>
+              <!-- Arrowhead appears after shaft -->
+              <path d="M 70 4 L 84 12 L 70 20"
+                fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                stroke-dasharray="36" stroke-dashoffset="36"
+                style="animation: drawPath 0.3s ease 2.45s forwards;"/>
+            </svg>
+          </div>
+
+          <!-- Product: Biphenyl OCH3 (Group 32) -->
+          <div class="mol-anim m5">
+            <svg width="192" height="112" viewBox="0 0 157 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M102.028 50.5435L117.214 41.776" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M43.9034 41.3773L59.0893 50.1449" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M80.3446 43.2815L97.5773 53.2308M80.3446 38.045L58.875 50.4405V77.8423L80.3446 90.2378L101.814 77.8423V50.4405L80.3446 38.045Z" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M98.1486 74.1767L81.3918 83.8511" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M63.0642 73.6532V54.2782" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M22.2196 6.10251L39.4523 16.0518M22.2196 0.866028L0.75 13.2615V40.6633L22.2196 53.0588L43.6892 40.6633V13.2615L22.2196 0.866028Z" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M40.0236 36.9977L23.2668 46.6722" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M4.93921 36.4742V17.0992" stroke="black" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M123.588 44.0276C122.712 44.0276 121.961 43.833 121.334 43.4437C120.708 43.0501 120.226 42.4936 119.887 41.7742C119.553 41.0548 119.386 40.2085 119.386 39.2352V39.2225C119.386 38.2407 119.555 37.3922 119.893 36.6771C120.236 35.9619 120.721 35.4096 121.347 35.0203C121.978 34.631 122.724 34.4363 123.588 34.4363C124.455 34.4363 125.202 34.631 125.828 35.0203C126.459 35.4096 126.944 35.964 127.282 36.6834C127.621 37.3986 127.79 38.2449 127.79 39.2225V39.2352C127.79 40.2085 127.621 41.0548 127.282 41.7742C126.948 42.4894 126.465 43.0438 125.835 43.4373C125.209 43.8309 124.459 44.0276 123.588 44.0276ZM123.588 42.9739C124.214 42.9739 124.754 42.8195 125.206 42.5106C125.659 42.2016 126.008 41.7679 126.254 41.2093C126.499 40.6465 126.622 39.9884 126.622 39.2352V39.2225C126.622 38.4608 126.499 37.8006 126.254 37.242C126.008 36.6834 125.659 36.2518 125.206 35.9471C124.754 35.6424 124.214 35.4901 123.588 35.4901C122.966 35.4901 122.428 35.6424 121.975 35.9471C121.523 36.2518 121.171 36.6834 120.922 37.242C120.676 37.8006 120.554 38.4608 120.554 39.2225V39.2352C120.554 39.9884 120.674 40.6465 120.915 41.2093C121.157 41.7679 121.504 42.2016 121.956 42.5106C122.409 42.8195 122.953 42.9739 123.588 42.9739ZM133.198 44.0276C132.369 44.0276 131.652 43.833 131.047 43.4437C130.441 43.0543 129.974 42.5021 129.644 41.7869C129.318 41.0718 129.155 40.2233 129.155 39.2415V39.2288C129.155 38.2428 129.318 37.3922 129.644 36.6771C129.974 35.9619 130.439 35.4096 131.04 35.0203C131.645 34.631 132.363 34.4363 133.192 34.4363C133.835 34.4363 134.419 34.5633 134.944 34.8172C135.473 35.0669 135.909 35.416 136.252 35.8646C136.594 36.3089 136.81 36.8231 136.899 37.407L136.893 37.4197H135.744L135.737 37.407C135.636 37.0135 135.464 36.6749 135.223 36.3914C134.982 36.1037 134.688 35.8815 134.341 35.7249C133.998 35.5683 133.615 35.4901 133.192 35.4901C132.608 35.4901 132.1 35.6424 131.669 35.9471C131.241 36.2518 130.911 36.6834 130.678 37.242C130.446 37.8006 130.329 38.4629 130.329 39.2288V39.2415C130.329 40.0032 130.446 40.6634 130.678 41.222C130.911 41.7806 131.241 42.2122 131.669 42.5169C132.1 42.8216 132.61 42.9739 133.198 42.9739C133.626 42.9739 134.013 42.9062 134.36 42.7708C134.707 42.6312 134.999 42.4344 135.236 42.1805C135.473 41.9223 135.638 41.6177 135.731 41.2664L135.744 41.2537H136.899V41.2664C136.797 41.825 136.577 42.3117 136.239 42.7264C135.9 43.1369 135.471 43.4564 134.95 43.6849C134.434 43.9134 133.85 44.0276 133.198 44.0276ZM138.556 43.8118V34.6522H139.699V38.6131H144.726V34.6522H145.869V43.8118H144.726V39.6414H139.699V43.8118H138.556ZM150.915 43.9642C150.285 43.9642 149.735 43.8563 149.265 43.6404C148.795 43.4246 148.423 43.1284 148.148 42.7518C147.877 42.3751 147.72 41.9456 147.678 41.4632L147.672 41.387H148.77L148.776 41.4505C148.823 41.8991 149.038 42.2651 149.423 42.5486C149.809 42.8322 150.306 42.9739 150.915 42.9739C151.317 42.9739 151.668 42.9041 151.969 42.7645C152.274 42.6248 152.511 42.4323 152.68 42.1868C152.849 41.9372 152.934 41.6515 152.934 41.3299V41.3172C152.934 40.7544 152.745 40.3227 152.369 40.0223C151.996 39.7176 151.489 39.5652 150.845 39.5652H149.696V38.6004H150.795C151.159 38.6004 151.48 38.5327 151.759 38.3973C152.039 38.2576 152.257 38.0693 152.413 37.8323C152.57 37.5911 152.648 37.3182 152.648 37.0135V37.0008C152.648 36.6792 152.58 36.4062 152.445 36.1819C152.31 35.9577 152.111 35.7863 151.848 35.6678C151.59 35.5493 151.275 35.4901 150.902 35.4901C150.543 35.4901 150.221 35.5514 149.938 35.6741C149.658 35.7926 149.434 35.964 149.265 36.1883C149.096 36.4126 148.994 36.6792 148.96 36.9881L148.954 37.0516H147.856L147.862 36.9881C147.913 36.4887 148.069 36.0529 148.332 35.6805C148.598 35.3081 148.95 35.0182 149.385 34.8109C149.825 34.6035 150.331 34.4998 150.902 34.4998C151.486 34.4998 151.994 34.6014 152.426 34.8045C152.862 35.0034 153.198 35.2806 153.435 35.636C153.676 35.9873 153.797 36.3957 153.797 36.8611V36.8738C153.797 37.2505 153.714 37.5848 153.549 37.8768C153.384 38.1688 153.156 38.4121 152.864 38.6068C152.572 38.8014 152.235 38.9389 151.855 39.0193V39.0447C152.523 39.0998 153.063 39.3262 153.473 39.7239C153.888 40.1175 154.095 40.6401 154.095 41.2918V41.3045C154.095 41.8123 153.958 42.2672 153.683 42.6693C153.408 43.0713 153.031 43.3887 152.553 43.6214C152.075 43.8499 151.529 43.9642 150.915 43.9642Z" fill="black"/>
+            </svg>
+          </div>
+
+        </div>
+
+        <!-- Results card -->
+        <div class="results-reveal inner-card">
+          <div class="result-row" style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+            <span class="result-label" style="font-size:14px; font-weight:600; color:#111; min-width:148px;">Product Status :</span>
+            <span class="success-pill success-pill-anim">✓ SUCCESS</span>
+          </div>
+          <div class="result-row" style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+            <span class="result-label" style="font-size:14px; font-weight:600; color:#111; min-width:148px;">Estimated Yield :</span>
+            <div class="yield-track"><div class="yield-fill-anim" style="height:100%; background:#000DFF; border-radius:999px;"></div></div>
+            <span style="font-size:14px; font-weight:600; color:#111; min-width:36px;">78%</span>
+          </div>
+          <div class="result-row" style="display:flex; align-items:center; gap:16px;">
+            <span class="result-label" style="font-size:14px; font-weight:600; color:#111; min-width:148px;">Confidence :</span>
+            <span class="confidence-text" style="font-size:13px; color:#6b7280;">High · Para-substituted aryl ring detected · Pd/B coupling favored</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" style="padding:96px 32px; background:#fafafa; border-top:1px solid #f3f4f6;">
+    <div style="max-width:1000px; margin:0 auto;">
+      <div style="text-align:center; margin-bottom:56px;">
+        <span class="section-label">How it works</span>
+        <h2 style="font-size:clamp(28px,4vw,42px); font-weight:800; letter-spacing:-1px; margin:0 0 14px;">Three steps to a prediction</h2>
+        <p style="font-size:16px; color:#6b7280; max-width:460px; margin:0 auto; line-height:1.7;">No chemistry PhD required. Pick a reaction, get your answer in seconds.</p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
+        <!-- Step 1 -->
+        <div style="background:white; border:1.5px solid #e5e7eb; border-radius:16px; padding:32px;">
+          <div class="step-number" style="margin-bottom:20px;">1</div>
+          <h3 style="font-size:18px; font-weight:700; margin:0 0 10px;">Choose Your Reaction</h3>
+          <p style="font-size:14px; color:#6b7280; line-height:1.7; margin:0 0 16px;">Pick from 8 built-in reaction types or enter a custom SMILES string for full control.</p>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div style="font-size:13px; color:#374151; display:flex; align-items:center; gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#000DFF;flex-shrink:0;"></span>Suzuki / Heck / Negishi coupling</div>
+            <div style="font-size:13px; color:#374151; display:flex; align-items:center; gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#000DFF;flex-shrink:0;"></span>SN1 / SN2 substitution</div>
+            <div style="font-size:13px; color:#374151; display:flex; align-items:center; gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#000DFF;flex-shrink:0;"></span>Aldol, Esterification, Grignard</div>
+            <div style="font-size:13px; color:#374151; display:flex; align-items:center; gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#9ca3af;flex-shrink:0;"></span>Custom SMILES input</div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div style="background:white; border:1.5px solid #e5e7eb; border-radius:16px; padding:32px;">
+          <div class="step-number" style="margin-bottom:20px;">2</div>
+          <h3 style="font-size:18px; font-weight:700; margin:0 0 10px;">AI Analyzes the Chemistry</h3>
+          <p style="font-size:14px; color:#6b7280; line-height:1.7; margin:0 0 16px;">Your input is sent to IBM RXN — a transformer trained on millions of reactions — which evaluates feasibility and yield factors.</p>
+          <div style="background:#f9fafb; border-radius:10px; padding:14px; font-family:monospace; font-size:12px; color:#374151;">
+            <div style="color:#16a34a; margin-bottom:4px;">POST /predict</div>
+            <div><span style="color:#000DFF;">smiles:</span> "c1ccc(B(O)O)cc1"</div>
+            <div><span style="color:#000DFF;">type:</span> "suzuki"</div>
+            <div style="color:#9ca3af; margin:6px 0;">↓ IBM RXN API ↓</div>
+            <div><span style="color:#7c3aed;">outcome:</span> "success"</div>
+            <div><span style="color:#7c3aed;">confidence:</span> 0.91</div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div style="background:white; border:1.5px solid #e5e7eb; border-radius:16px; padding:32px;">
+          <div class="step-number" style="margin-bottom:20px;">3</div>
+          <h3 style="font-size:18px; font-weight:700; margin:0 0 10px;">Get Your Results</h3>
+          <p style="font-size:14px; color:#6b7280; line-height:1.7; margin:0 0 16px;">See a clear success/fail verdict, yield estimate, and confidence score — all in a clean mobile UI.</p>
+          <div style="background:#f9fafb; border-radius:10px; padding:16px; display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span class="success-pill">✓ SUCCESS</span>
+              <span style="font-weight:700; font-size:15px; margin-left:auto;">78%</span>
+            </div>
+            <div style="height:8px; background:#e5e7eb; border-radius:999px; overflow:hidden;">
+              <div style="height:100%; width:78%; background:#000DFF; border-radius:999px;"></div>
+            </div>
+            <div style="font-size:12px; color:#9ca3af; display:flex; align-items:center; gap:6px;">
+              <span style="width:8px;height:8px;background:#16a34a;border-radius:50%;"></span>
+              Confidence: High (0.91)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" style="padding:96px 32px; background:white; border-top:1px solid #f3f4f6;">
+    <div style="max-width:1000px; margin:0 auto;">
+      <div style="text-align:center; margin-bottom:56px;">
+        <span class="section-label">Features</span>
+        <h2 style="font-size:clamp(28px,4vw,42px); font-weight:800; letter-spacing:-1px; margin:0 0 14px;">Everything a chemist needs</h2>
+        <p style="font-size:16px; color:#6b7280; max-width:420px; margin:0 auto; line-height:1.7;">Designed for researchers, students, and lab practitioners.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px;">
+        <div class="feature-card">
+          <div style="font-size:28px; margin-bottom:14px;">🔬</div>
+          <h3 style="font-size:16px; font-weight:700; margin:0 0 8px;">Reaction Library</h3>
+          <p style="font-size:14px; color:#6b7280; line-height:1.7; margin:0;">8 pre-loaded reaction types across coupling, substitution, condensation, and addition. No SMILES needed to start.</p>
+        </div>
+        <div class="feature-card">
+          <div style="font-size:28px; margin-bottom:14px;">⌨️</div>
+          <h3 style="font-size:16px; font-weight:700; margin:0 0 8px;">Custom SMILES Input</h3>
+          <p style="font-size:14px; color:#6b7280; line-height:1.7; margin:0;">Advanced mode for custom SMILES strings. Predict any reaction outside the built-in library — full research-grade flexibility.</p>
+        </div>
+        <div class="feature-card">
+          <div style="font-size:28px; margin-bottom:14px;">📈</div>
+          <h3 style="font-size:16px; font-weight:700; margin:0 0 8px;">Yield Estimation</h3>
+          <p style="font-size:14px; color:#6b7280; line-height:1.7; margin:0;">Go beyond pass/fail. Get a quantitative yield estimate to compare alternatives and prioritize the most efficient pathway.</p>
+        </div>
+        <div class="feature-card">
+          <div style="font-size:28px; margin-bottom:14px;">🎯</div>
+          <h3 style="font-size:16px; font-weight:700; margin:0 0 8px;">Confidence Scoring</h3>
+          <p style="font-size:14px; color:#6b7280; line-height:1.7; margin:0;">Know how certain the model is. High vs. borderline cases are clearly distinguished so you know when to trust the result.</p>
+        </div>
+        <div class="feature-card">
+          <div style="font-size:28px; margin-bottom:14px;">📱</div>
+          <h3 style="font-size:16px; font-weight:700; margin:0 0 8px;">Mobile-First</h3>
+          <p style="font-size:14px; color:#6b7280; line-height:1.7; margin:0;">Built with React Native (Expo). Run predictions from your phone at the bench — no laptop needed during lab work.</p>
+        </div>
+        <div class="feature-card">
+          <div style="font-size:28px; margin-bottom:14px;">🧠</div>
+          <h3 style="font-size:16px; font-weight:700; margin:0 0 8px;">IBM RXN Backbone</h3>
+          <p style="font-size:14px; color:#6b7280; line-height:1.7; margin:0;">Powered by IBM's reaction transformer, trained on millions of real-world reactions from patent and literature databases.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REACTIONS -->
+  <section id="reactions" style="padding:96px 32px; background:#fafafa; border-top:1px solid #f3f4f6;">
+    <div style="max-width:1000px; margin:0 auto;">
+      <div style="text-align:center; margin-bottom:56px;">
+        <span class="section-label">Built-in Reactions</span>
+        <h2 style="font-size:clamp(28px,4vw,42px); font-weight:800; letter-spacing:-1px; margin:0 0 14px;">8 reaction types, ready to predict</h2>
+        <p style="font-size:16px; color:#6b7280; max-width:440px; margin:0 auto; line-height:1.7;">Covering the most common reaction classes in organic synthesis.</p>
+      </div>
+      <div class="reactions-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:32px;">
+        <!-- Coupling -->
+        <div>
+          <p style="font-size:12px; color:#9ca3af; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 12px; font-weight:500;">Coupling Reactions</p>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div class="reaction-row">
+              <div class="reaction-icon">Su</div>
+              <div style="flex:1;">
+                <div style="font-weight:600; font-size:14px; margin-bottom:2px;">Suzuki Coupling</div>
+                <div style="font-size:12px; color:#9ca3af;">Aryl halide + boronic acid → biaryl · Pd</div>
+              </div>
+              <span style="color:#d1d5db;">→</span>
+            </div>
+            <div class="reaction-row">
+              <div class="reaction-icon">He</div>
+              <div style="flex:1;">
+                <div style="font-weight:600; font-size:14px; margin-bottom:2px;">Heck Reaction</div>
+                <div style="font-size:12px; color:#9ca3af;">Aryl halide + alkene → substituted alkene · Pd</div>
+              </div>
+              <span style="color:#d1d5db;">→</span>
+            </div>
+            <div class="reaction-row">
+              <div class="reaction-icon">Ne</div>
+              <div style="flex:1;">
+                <div style="font-weight:600; font-size:14px; margin-bottom:2px;">Negishi Coupling</div>
+                <div style="font-size:12px; color:#9ca3af;">Organozinc + aryl halide → biaryl · Pd/Ni</div>
+              </div>
+              <span style="color:#d1d5db;">→</span>
+            </div>
+          </div>
+        </div>
+        <!-- Substitution + Condensation -->
+        <div>
+          <p style="font-size:12px; color:#9ca3af; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 12px; font-weight:500;">Substitution</p>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:24px;">
+            <div class="reaction-row">
+              <div class="reaction-icon" style="background:#f5f3ff; color:#7c3aed;">SN1</div>
+              <div style="flex:1;">
+                <div style="font-weight:600; font-size:14px; margin-bottom:2px;">SN1 Substitution</div>
+                <div style="font-size:12px; color:#9ca3af;">Unimolecular · tertiary/secondary · carbocation</div>
+              </div>
+              <span style="color:#d1d5db;">→</span>
+            </div>
+            <div class="reaction-row">
+              <div class="reaction-icon" style="background:#f5f3ff; color:#7c3aed;">SN2</div>
+              <div style="flex:1;">
+                <div style="font-weight:600; font-size:14px; margin-bottom:2px;">SN2 Substitution</div>
+                <div style="font-size:12px; color:#9ca3af;">Bimolecular · primary · inversion of config</div>
+              </div>
+              <span style="color:#d1d5db;">→</span>
+            </div>
+          </div>
+          <p style="font-size:12px; color:#9ca3af; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 12px; font-weight:500;">Condensation & Addition</p>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div class="reaction-row">
+              <div class="reaction-icon" style="background:#f0fdf4; color:#16a34a;">Al</div>
+              <div style="flex:1;">
+                <div style="font-weight:600; font-size:14px; margin-bottom:2px;">Aldol Condensation</div>
+                <div style="font-size:12px; color:#9ca3af;">Carbonyl + enolate → β-hydroxy carbonyl</div>
+              </div>
+              <span style="color:#d1d5db;">→</span>
+            </div>
+            <div class="reaction-row">
+              <div class="reaction-icon" style="background:#f0fdf4; color:#16a34a;">Es</div>
+              <div style="flex:1;">
+                <div style="font-weight:600; font-size:14px; margin-bottom:2px;">Esterification</div>
+                <div style="font-size:12px; color:#9ca3af;">Acid + alcohol → ester + water · acid-cat.</div>
+              </div>
+              <span style="color:#d1d5db;">→</span>
+            </div>
+            <div class="reaction-row">
+              <div class="reaction-icon" style="background:#f0fdf4; color:#16a34a;">Gr</div>
+              <div style="flex:1;">
+                <div style="font-weight:600; font-size:14px; margin-bottom:2px;">Grignard Reaction</div>
+                <div style="font-size:12px; color:#9ca3af;">RMgX + carbonyl → alcohol · nucleophilic add.</div>
+              </div>
+              <span style="color:#d1d5db;">→</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <!--
+  <section id="research" style="padding:96px 32px; background:white; border-top:1px solid #f3f4f6;">
+    <div style="max-width:1000px; margin:0 auto;">
+      <div style="text-align:center; margin-bottom:56px;">
+        <span class="section-label">Research Foundation</span>
+        <h2 style="font-size:clamp(28px,4vw,42px); font-weight:800; letter-spacing:-1px; margin:0 0 14px;">Built on real experimental data</h2>
+        <p style="font-size:16px; color:#6b7280; max-width:500px; margin:0 auto; line-height:1.7;">
+          Chemdem's prediction logic is informed by 29 reactions from the Wren Group (SynOpen 2023), studying amine + Diethyl Squarate reactions with clear structure-activity patterns.
+        </p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:40px;">
+        <div class="stat-card">
+          <div style="font-size:48px; font-weight:900; color:#000DFF; letter-spacing:-2px;">29</div>
+          <div style="font-weight:600; margin:4px 0 6px;">Experimental Reactions</div>
+          <div style="font-size:13px; color:#9ca3af;">27 successes · 2 confirmed failures</div>
+        </div>
+        <div class="stat-card">
+          <div style="font-size:48px; font-weight:900; color:#000DFF; letter-spacing:-2px;">1.20</div>
+          <div style="font-weight:600; margin:4px 0 6px;">μM HDAC8 IC₅₀</div>
+          <div style="font-size:13px; color:#9ca3af;">Best activity — para-F aniline compound</div>
+        </div>
+        <div class="stat-card">
+          <div style="font-size:48px; font-weight:900; color:#000DFF; letter-spacing:-2px;">99%</div>
+          <div style="font-weight:600; margin:4px 0 6px;">Peak Yield Observed</div>
+          <div style="font-size:13px; color:#9ca3af;">Benzylamine at reflux — compound 37</div>
+        </div>
+      </div>
+
+      <div style="background:#fafafa; border:1.5px solid #e5e7eb; border-radius:16px; padding:32px;">
+        <h3 style="font-size:17px; font-weight:700; margin:0 0 24px;">Substituent Position Effect on Yield</h3>
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:14px; font-weight:500; display:flex; align-items:center; gap:8px;"><span style="width:10px;height:10px;background:#16a34a;border-radius:50%;"></span> Para position <span style="color:#9ca3af; font-weight:400; font-size:12px;">Best — no steric clash</span></span>
+              <span style="font-weight:700; font-size:14px;">~70%</span>
+            </div>
+            <div style="height:10px; background:#e5e7eb; border-radius:999px; overflow:hidden;"><div style="height:100%;width:70%;background:#16a34a;border-radius:999px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:14px; font-weight:500; display:flex; align-items:center; gap:8px;"><span style="width:10px;height:10px;background:#f59e0b;border-radius:50%;"></span> Meta position <span style="color:#9ca3af; font-weight:400; font-size:12px;">Moderate steric effect</span></span>
+              <span style="font-weight:700; font-size:14px;">~48%</span>
+            </div>
+            <div style="height:10px; background:#e5e7eb; border-radius:999px; overflow:hidden;"><div style="height:100%;width:48%;background:#f59e0b;border-radius:999px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:14px; font-weight:500; display:flex; align-items:center; gap:8px;"><span style="width:10px;height:10px;background:#f97316;border-radius:50%;"></span> Ortho position <span style="color:#9ca3af; font-weight:400; font-size:12px;">Steric crowding</span></span>
+              <span style="font-weight:700; font-size:14px;">18–38%</span>
+            </div>
+            <div style="height:10px; background:#e5e7eb; border-radius:999px; overflow:hidden;"><div style="height:100%;width:30%;background:#f97316;border-radius:999px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:14px; font-weight:500; display:flex; align-items:center; gap:8px;"><span style="width:10px;height:10px;background:#ef4444;border-radius:50%;"></span> Ortho-Cl / Ortho-Br Aniline <span style="color:#ef4444; font-weight:500; font-size:12px;">FAIL — no reaction</span></span>
+              <span style="font-weight:700; font-size:14px; color:#ef4444;">0%</span>
+            </div>
+            <div style="height:10px; background:#e5e7eb; border-radius:999px; overflow:hidden;"><div style="height:100%;width:2%;background:#ef4444;border-radius:999px;"></div></div>
+          </div>
+        </div>
+        <p style="font-size:12px; color:#9ca3af; margin:20px 0 0;">Source: Wren Group, SynOpen 2023 · Amine + Diethyl Squarate → Monosquarate-amide in EtOH</p>
+      </div>
+    </div>
+  </section>
+  -->
+
+  <!-- CTA -->
+  <section id="cta" style="padding:96px 32px; background:#fafafa; border-top:1px solid #f3f4f6;">
+    <div style="max-width:600px; margin:0 auto; text-align:center;">
+      <div style="margin:0 auto 24px; width:fit-content;">
+        <svg width="141" height="33" viewBox="0 0 141 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19.0029 12.0083L22.8101 8.20428M17.8117 21.3468L17.1844 17.586M9.65637 13.1984L13.4204 13.8252" stroke="#7D83FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M33.5288 24.1988C32.1687 24.1988 30.967 23.8954 29.9239 23.2885C28.8807 22.6816 28.0687 21.8306 27.4877 20.7356C26.9199 19.6406 26.636 18.3674 26.636 16.9161C26.636 15.8079 26.801 14.8118 27.1312 13.9279C27.4612 13.0308 27.93 12.2655 28.5374 11.6323C29.1448 10.9858 29.8711 10.4911 30.7162 10.148C31.5612 9.80501 32.4922 9.63348 33.509 9.63348C34.6181 9.63348 35.582 9.7918 36.4007 10.1084C37.2326 10.4251 37.9259 10.9 38.4805 11.5333C39.0351 12.1666 39.4444 12.9516 39.7085 13.8883L37.193 14.6601C36.9157 13.7762 36.4668 13.1033 35.8462 12.6415C35.2255 12.1798 34.4399 11.9489 33.4891 11.9489C32.644 11.9489 31.9112 12.1534 31.2906 12.5624C30.6832 12.9582 30.2078 13.5255 29.8645 14.2643C29.5344 15.0032 29.3693 15.8871 29.3693 16.9161C29.3693 17.9321 29.5344 18.816 29.8645 19.568C30.2078 20.3068 30.6897 20.8807 31.3104 21.2897C31.931 21.6855 32.6704 21.8834 33.5288 21.8834C34.453 21.8834 35.2255 21.6525 35.8462 21.1907C36.4668 20.729 36.9157 20.0561 37.193 19.1722L39.6887 19.944C39.4246 20.8675 39.0152 21.6459 38.4607 22.2792C37.9061 22.9125 37.2194 23.394 36.4007 23.7238C35.582 24.0405 34.6247 24.1988 33.5288 24.1988ZM41.324 23.8822V9.93033H43.78V14.8778C44.0573 14.4028 44.4336 14.04 44.909 13.7893C45.3975 13.5255 45.9654 13.3936 46.6124 13.3936C47.3651 13.3936 48.0187 13.5387 48.5733 13.8289C49.141 14.1192 49.5834 14.5678 49.9003 15.1746C50.2172 15.7683 50.3757 16.5401 50.3757 17.49V23.8822H47.9196V17.8067C47.9196 17.0415 47.7414 16.4742 47.3849 16.1048C47.0283 15.7354 46.5596 15.5506 45.9786 15.5506C45.3183 15.5506 44.7835 15.7683 44.3742 16.2037C43.9781 16.6391 43.78 17.246 43.78 18.0244V23.8822H41.324ZM57.0054 24.1196C55.9487 24.1196 55.0376 23.8954 54.2719 23.4468C53.506 22.9982 52.9118 22.365 52.4893 21.547C52.0799 20.729 51.8753 19.7725 51.8753 18.6774C51.8753 17.6352 52.0931 16.7182 52.5289 15.9267C52.9646 15.1351 53.5588 14.515 54.3115 14.0664C55.0772 13.6179 55.9423 13.3936 56.9063 13.3936C57.8571 13.3936 58.689 13.5914 59.402 13.9872C60.1151 14.383 60.6696 14.9438 61.0658 15.6694C61.4619 16.395 61.66 17.2592 61.66 18.2618C61.66 18.4466 61.653 18.6445 61.6402 18.8555C61.6402 19.0534 61.6268 19.2184 61.6006 19.3503H53.1033V17.6879H60.0556L59.2832 18.0046C59.2832 17.4109 59.1841 16.9096 58.9861 16.5006C58.8009 16.0916 58.5236 15.7881 58.1542 15.5902C57.7843 15.3792 57.3421 15.2736 56.8271 15.2736C56.3518 15.2736 55.916 15.3792 55.5199 15.5902C55.1366 15.7881 54.8395 16.1048 54.6284 16.5401C54.4171 16.9755 54.3115 17.523 54.3115 18.1827V19.0534C54.3115 20.0166 54.536 20.7752 54.9851 21.3293C55.4471 21.8702 56.1403 22.1407 57.0648 22.1407C57.6456 22.1407 58.1408 22.0153 58.5503 21.7646C58.9593 21.514 59.2896 21.1248 59.5407 20.597L61.4619 21.5272C61.1975 22.0813 60.8479 22.5562 60.4122 22.952C59.9764 23.3347 59.4679 23.6249 58.887 23.8228C58.3191 24.0207 57.6917 24.1196 57.0054 24.1196ZM63.1618 23.8822V13.631H65.4594V14.8976C65.7234 14.4095 66.1061 14.0401 66.6082 13.7894C67.1098 13.5255 67.704 13.3936 68.3908 13.3936C69.0771 13.3936 69.6713 13.5321 70.1734 13.8091C70.6884 14.073 71.0776 14.4622 71.342 14.9767C71.6193 14.4886 72.0219 14.106 72.5503 13.8289C73.0781 13.5387 73.6857 13.3936 74.3725 13.3936C75.1514 13.3936 75.8115 13.5387 76.3532 13.8289C76.8944 14.106 77.3039 14.515 77.5812 15.0559C77.8714 15.5969 78.0169 16.2631 78.0169 17.0547V23.8822H75.5609V17.6484C75.5609 16.9755 75.3955 16.461 75.0657 16.1048C74.7488 15.7354 74.3195 15.5506 73.7783 15.5506C73.1573 15.5506 72.6691 15.7618 72.3126 16.1839C71.9689 16.5929 71.7976 17.1734 71.7976 17.9254V23.8822H69.3416V17.6484C69.3416 16.9755 69.1831 16.461 68.8662 16.1048C68.5493 15.7354 68.12 15.5506 67.5788 15.5506C66.9712 15.5506 66.4894 15.7683 66.1329 16.2037C65.7892 16.6259 65.6179 17.213 65.6179 17.965V23.8822H63.1618Z" fill="black"/>
+          <path d="M84.0521 24.1197C83.2068 24.1197 82.4344 23.9086 81.7347 23.4864C81.0479 23.051 80.5002 22.431 80.0907 21.6261C79.6946 20.8214 79.4965 19.8649 79.4965 18.7566C79.4965 17.6484 79.6946 16.6985 80.0907 15.9069C80.4869 15.1021 81.0281 14.482 81.7149 14.0466C82.4146 13.6113 83.194 13.3936 84.0521 13.3936C84.4616 13.3936 84.8577 13.4464 85.2405 13.5519C85.6366 13.6575 86.0065 13.8224 86.3497 14.0466C86.6928 14.271 86.9835 14.5744 87.2212 14.957V9.93036H89.6772V23.8822H87.3598V22.4177C87.1355 22.8267 86.8449 23.1566 86.4883 23.4072C86.1452 23.6579 85.7619 23.836 85.3395 23.9416C84.93 24.0603 84.5012 24.1197 84.0521 24.1197ZM84.7057 22.0417C85.2073 22.0417 85.6564 21.923 86.0526 21.6855C86.4621 21.4349 86.779 21.0655 87.0033 20.5773C87.241 20.0892 87.3598 19.4823 87.3598 18.7566C87.3598 18.031 87.241 17.4241 87.0033 16.936C86.779 16.4478 86.4621 16.085 86.0526 15.8475C85.6564 15.5969 85.2073 15.4715 84.7057 15.4715C84.2041 15.4715 83.7486 15.5969 83.339 15.8475C82.9429 16.085 82.626 16.4478 82.3883 16.936C82.1506 17.4241 82.0318 18.031 82.0318 18.7566C82.0318 19.4823 82.1506 20.0892 82.3883 20.5773C82.626 21.0655 82.9429 21.4349 83.339 21.6855C83.7486 21.923 84.2041 22.0417 84.7057 22.0417ZM96.4061 24.1197C95.3499 24.1197 94.4388 23.8954 93.6728 23.4468C92.9067 22.9983 92.3125 22.365 91.8901 21.547C91.4806 20.729 91.2761 19.7725 91.2761 18.6775C91.2761 17.6352 91.494 16.7183 91.9298 15.9267C92.3655 15.1351 92.9597 14.515 93.7124 14.0664C94.4784 13.6179 95.343 13.3936 96.3071 13.3936C97.2578 13.3936 98.0897 13.5915 98.8027 13.9873C99.5158 14.3831 100.07 14.9438 100.466 15.6694C100.863 16.3951 101.061 17.2592 101.061 18.2619C101.061 18.4466 101.054 18.6445 101.041 18.8556C101.041 19.0535 101.028 19.2184 101.001 19.3503H92.5042V17.688H99.4563L98.6839 18.0046C98.6839 17.4109 98.5848 16.9096 98.3868 16.5006C98.2021 16.0916 97.9248 15.7881 97.5549 15.5902C97.185 15.3792 96.7428 15.2736 96.2278 15.2736C95.7525 15.2736 95.3167 15.3792 94.9206 15.5902C94.5378 15.7881 94.2407 16.1048 94.0293 16.5402C93.8178 16.9755 93.7124 17.5231 93.7124 18.1827V19.0535C93.7124 20.0166 93.9367 20.7752 94.3858 21.3293C94.8478 21.8703 95.541 22.1407 96.4655 22.1407C97.0463 22.1407 97.5415 22.0154 97.951 21.7647C98.3605 21.514 98.6903 21.1248 98.9414 20.5971L100.863 21.5272C100.599 22.0813 100.249 22.5563 99.8129 22.9521C99.3771 23.3347 98.8686 23.6249 98.2877 23.8228C97.7198 24.0207 97.0929 24.1197 96.4061 24.1197ZM102.563 23.8822V13.6311H104.86V14.8976C105.124 14.4095 105.507 14.0401 106.009 13.7894C106.511 13.5255 107.105 13.3936 107.792 13.3936C108.478 13.3936 109.073 13.5321 109.574 13.8092C110.089 14.0731 110.479 14.4622 110.743 14.9768C111.02 14.4886 111.423 14.106 111.951 13.829C112.479 13.5387 113.086 13.3936 113.773 13.3936C114.552 13.3936 115.213 13.5387 115.754 13.829C116.295 14.106 116.705 14.515 116.982 15.0559C117.273 15.5969 117.418 16.2631 117.418 17.0547V23.8822H114.962V17.6484C114.962 16.9755 114.797 16.461 114.466 16.1048C114.15 15.7354 113.72 15.5507 113.179 15.5507C112.559 15.5507 112.07 15.7618 111.713 16.1839C111.37 16.593 111.198 17.1734 111.198 17.9254V23.8822H108.742V17.6484C108.742 16.9755 108.584 16.461 108.267 16.1048C107.95 15.7354 107.521 15.5507 106.979 15.5507C106.372 15.5507 105.89 15.7684 105.534 16.2037C105.19 16.6259 105.019 17.213 105.019 17.965V23.8822H102.563Z" fill="#000DFF"/>
+          <path d="M22.3317 8.34784C23.0246 9.04019 24.148 9.04019 24.841 8.34784C25.5339 7.6555 25.5339 6.53302 24.841 5.84067C24.148 5.14832 23.0246 5.14832 22.3317 5.84067C21.6387 6.53302 21.6387 7.6555 22.3317 8.34784Z" fill="#000DFF" stroke="#000DFF" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16.9183 24.4807C17.6112 25.1731 18.7347 25.1731 19.4276 24.4807C20.1205 23.7884 20.1205 22.6659 19.4276 21.9735C18.7347 21.2812 17.6112 21.2812 16.9183 21.9735C16.2253 22.6659 16.2253 23.7884 16.9183 24.4807Z" fill="#000DFF" stroke="#7D83FF" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14.675 16.3324C15.8201 17.4766 17.6767 17.4766 18.8219 16.3324C19.967 15.1883 19.967 13.3332 18.8219 12.1891C17.6767 11.045 15.8201 11.045 14.675 12.1891C13.5299 13.3332 13.5299 15.1883 14.675 16.3324Z" stroke="#000DFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6.5197 14.452C7.21263 15.1443 8.33609 15.1443 9.02902 14.452C9.72195 13.7596 9.72195 12.6371 9.02902 11.9448C8.33609 11.2525 7.21263 11.2525 6.5197 11.9448C5.82677 12.6371 5.82677 13.7596 6.5197 14.452Z" fill="#000DFF" stroke="#000DFF" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 style="font-size:clamp(28px,4vw,40px); font-weight:800; letter-spacing:-1px; margin:0 0 14px;">Ready to predict your next reaction?</h2>
+      <p style="font-size:16px; color:#6b7280; line-height:1.7; margin:0 0 36px;">Stop guessing. Stop wasting reagents on reactions that won't work. Let AI screen your chemistry before you set foot in the lab.</p>
+      <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+        <a href="mailto:chemdem@example.com" class="btn-primary">Request Early Access <span style="font-size:16px;">↗</span></a>
+        <a href="https://github.com" class="btn-secondary">View on GitHub</a>
+      </div>
+      <p style="font-size:13px; color:#d1d5db; margin-top:20px;">University research project · Free during beta · No account required to run locally</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="border-top:1px solid #f3f4f6; padding:28px 32px;">
+    <div class="footer-row" style="max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="width:24px;height:24px;background:#000DFF;border-radius:6px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:12px;">C</div>
+        <span style="font-weight:600; font-size:14px;">Chemdem</span>
+        <span style="color:#d1d5db; font-size:14px;">· University Project</span>
+      </div>
+      <span style="font-size:13px; color:#9ca3af;">Powered by IBM RXN for Chemistry · Built with React Native + FastAPI</span>
+      <div style="display:flex; gap:24px; font-size:13px; color:#9ca3af;">
+        <a href="#how-it-works" style="text-decoration:none; color:inherit;" onmouseover="this.style.color='#111'" onmouseout="this.style.color='#9ca3af'">How it works</a>
+        <a href="#reactions" style="text-decoration:none; color:inherit;" onmouseover="this.style.color='#111'" onmouseout="this.style.color='#9ca3af'">Reactions</a>
+        <a href="#research" style="text-decoration:none; color:inherit;" onmouseover="this.style.color='#111'" onmouseout="this.style.color='#9ca3af'">Research</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      const btn = document.getElementById('hamburgerBtn');
+      const overlay = document.getElementById('menuOverlay');
+      if (menu.classList.contains('open')) {
+        closeMobileMenu();
+      } else {
+        menu.classList.add('open');
+        btn.classList.add('open');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileMenu() {
+      document.getElementById('mobileMenu').classList.remove('open');
+      document.getElementById('hamburgerBtn').classList.remove('open');
+      document.getElementById('menuOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function setActive(el) {
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      el.classList.add('active');
+      movePill(el);
+    }
+
+    function movePill(el) {
+      const container = document.getElementById('navPill');
+      const pill = document.getElementById('slidingPill');
+      const containerRect = container.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      pill.style.left = (elRect.left - containerRect.left) + 'px';
+      pill.style.width = elRect.width + 'px';
+    }
+
+    window.addEventListener('load', () => {
+      const active = document.querySelector('.nav-link.active');
+      if (active) {
+        const pill = document.getElementById('slidingPill');
+        pill.style.transition = 'none';
+        movePill(active);
+        requestAnimationFrame(() => { pill.style.transition = ''; });
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll('.results-reveal, .success-pill-anim, .yield-fill-anim').forEach(el => {
+              el.classList.add('in-view');
+            });
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+
+      const resultsCard = document.querySelector('.results-reveal');
+      if (resultsCard) observer.observe(resultsCard);
+
+      // ── Scroll reveal ──
+      const revealItems = [];
+
+      // Section headings/intros
+      [
+        '#how-it-works > div > *:first-child',
+        '#features > div > *:first-child',
+        '#reactions > div > *:first-child',
+      ].forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) revealItems.push({ el, delay: 0 });
+      });
+
+      // How-it-works step cards
+      document.querySelectorAll('#how-it-works .step-card, #how-it-works > div > div:last-child > div')
+        .forEach((el, i) => revealItems.push({ el, delay: i * 0.1 }));
+
+      // Feature cards
+      document.querySelectorAll('.feature-card')
+        .forEach((el, i) => revealItems.push({ el, delay: i * 0.08 }));
+
+      // Reaction cards
+      document.querySelectorAll('.reactions-grid > div')
+        .forEach((el, i) => revealItems.push({ el, delay: i * 0.12 }));
+
+      // CTA + footer
+      const ctaInner = document.querySelector('#cta > div');
+      if (ctaInner) revealItems.push({ el: ctaInner, delay: 0 });
+      const footerInner = document.querySelector('footer > div');
+      if (footerInner) revealItems.push({ el: footerInner, delay: 0 });
+
+      // Apply class + staggered delay
+      revealItems.forEach(({ el, delay }) => {
+        el.classList.add('reveal');
+        el.style.transitionDelay = delay > 0 ? `${delay}s` : '0s';
+      });
+
+      // Observe
+      const scrollRevealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            scrollRevealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal').forEach(el => scrollRevealObserver.observe(el));
+    });
+  </script>
+</body>
+</html>

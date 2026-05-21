@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemdem — Reaction Dataset Interface</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #F0F2F6; min-height: 100vh; color: #222; }
+    input, select, textarea { font-family: inherit; }
+    button { font-family: inherit; cursor: pointer; }
+    button:hover { filter: brightness(0.94); }
+    button:active { filter: brightness(0.88); }
+    input:focus, select:focus { outline: 2px solid #1565C0; outline-offset: 1px; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 3px; }
+    .mono { font-family: 'Courier New', monospace !important; }
+
+    /* Reaction layout */
+    .rxn-row {
+      display: flex; align-items: flex-start;
+      justify-content: center; gap: 10px;
+      flex-wrap: wrap; padding: 24px 16px;
+    }
+    .rxn-plus {
+      font-size: 26px; color: #999; font-weight: 300;
+      margin-top: 80px; user-select: none; flex-shrink: 0;
+    }
+
+    /* Compound box */
+    .cbox {
+      background: #fff; border-radius: 14px;
+      border: 1.5px solid #DDE3EE;
+      padding: 14px; width: 230px; flex-shrink: 0;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .cbox-role {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: #888; text-align: center;
+    }
+    .cbox-canvas-wrap {
+      background: #F7F8FA; border-radius: 10px;
+      border: 1.5px solid #E8EAF0;
+      min-height: 160px; display: flex;
+      align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .cbox-field { display: flex; flex-direction: column; gap: 3px; }
+    .cbox-label {
+      font-size: 10px; font-weight: 700;
+      color: #777; letter-spacing: 0.5px;
+    }
+    .cbox-input {
+      width: 100%; padding: 6px 8px;
+      border: 1px solid #DDE3EE; border-radius: 7px;
+      font-size: 11.5px; background: #FAFBFD;
+      transition: border-color 0.15s;
+    }
+    .cbox-input.mono { font-family: 'Courier New', monospace; font-size: 10.5px; }
+    .cbox-input:focus { border-color: #1565C0; background: #fff; }
+    .cbox-input.err { border-color: #E53935; background: #FFF5F5; }
+
+    /* Arrow */
+    .arrow-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      margin-top: 76px; flex-shrink: 0; min-width: 120px;
+    }
+    .arrow-line {
+      display: flex; align-items: center; width: 100%;
+    }
+    .arrow-shaft { flex: 1; height: 2px; background: #444; }
+    .arrow-head { font-size: 16px; color: #444; line-height: 1; margin-left: -2px; }
+    .arrow-cond {
+      font-size: 10.5px; color: #555; text-align: center;
+      line-height: 1.9; width: 100%;
+    }
+
+    /* Yield display */
+    .yield-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      margin-top: 76px; flex-shrink: 0; min-width: 80px;
+    }
+    .yield-pct { font-size: 32px; font-weight: 800; line-height: 1; }
+    .yield-label {
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 3px 11px; border-radius: 20px;
+    }
+    .yield-bar-bg {
+      width: 68px; height: 7px;
+      background: #E8EAF0; border-radius: 4px; overflow: hidden;
+    }
+    .yield-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+
+    /* Condition inputs */
+    .cond-select {
+      width: 100%; padding: 5px 7px;
+      border: 1px solid #DDE3EE; border-radius: 7px;
+      font-size: 11px; background: #FAFBFD;
+      appearance: none; text-align: center;
+    }
+    .cond-select:focus { outline: 2px solid #1565C0; }
+    .cond-input {
+      width: 100%; padding: 5px 7px;
+      border: 1px solid #DDE3EE; border-radius: 7px;
+      font-size: 11px; background: #FAFBFD; text-align: center;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 7px 13px; border-radius: 8px; border: none;
+      font-weight: 600; font-size: 12px;
+      display: inline-flex; align-items: center; gap: 5px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-sm {
+      padding: 3px 8px; border-radius: 6px; border: none;
+      font-weight: 600; font-size: 10px;
+      display: inline-flex; align-items: center; gap: 3px;
+      cursor: pointer;
+    }
+
+    /* Validation tag */
+    .vtag {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 12px;
+      font-size: 10px; font-weight: 700;
+    }
+
+    /* Panels */
+    .card {
+      background: #fff; border-radius: 14px;
+      border: 1px solid #DDE3EE;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+    }
+    .card-header {
+      padding: 11px 18px; border-bottom: 1px solid #F0F2F6;
+      background: #FAFBFD; border-radius: 14px 14px 0 0;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    /* Dot nav */
+    .rxn-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      border: 2px solid transparent;
+      padding: 0; cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .rxn-dot:hover { transform: scale(1.4); }
+
+    /* Modal */
+    .modal-bg {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 300; padding: 16px;
+    }
+    .modal {
+      background: #fff; border-radius: 16px;
+      padding: 28px; max-width: 540px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+    }
+
+    @media (max-width: 700px) {
+      .rxn-row { flex-direction: column; align-items: center; }
+      .rxn-plus { margin-top: 0; font-size: 22px; }
+      .arrow-wrap { margin-top: 0; transform: rotate(90deg); }
+      .yield-wrap { margin-top: 0; }
+      .cbox { width: 100%; max-width: 340px; }
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+const SOLVENTS = ['MeOH', 'EtOH', 'DMF', 'DMSO', 'THF', 'DCM', 'H₂O', 'Acetone'];
+const TEMP_OPTIONS = ['RT', 'Reflux', 'Custom'];
+
+// ── Seed data — Paper 1, first 5 reactions ────────────────────────────────────
+const SEED = [
+  {
+    id:1, dataset_version:'v0.1', batch_id:'batch_001',
+    paper_id:'paper_1', paper_source:'SynOpen 2023 — Long et al.',
+    reaction_id:'P1-R001',
+    sq_name:'Diethyl squarate', sq_smiles:'O=C1C(OCC)=C(OCC)C1=O',
+    sq_iupac:'1,2-diethoxycyclobut-1-ene-3,4-dione',
+    am_name:'Benzylamine', am_smiles:'NCC1=CC=CC=C1',
+    am_iupac:'phenylmethanamine',
+    solvent:'MeOH', temperature:'RT', temperature_celsius:25,
+    time_h:1, additive:'None',
+    pr_name:'N-Benzyl squaric monoamide ethyl ester',
+    pr_smiles:'O=C1C(OCC)=C(NCC2=CC=CC=C2)C1=O',
+    pr_iupac:'3-(benzylamino)-4-ethoxycyclobut-3-ene-1,2-dione',
+    yield_percent:33.0,
+  },
+  {
+    id:2, dataset_version:'v0.1', batch_id:'batch_001',
+    paper_id:'paper_1', paper_source:'SynOpen 2023 — Long et al.',
+    reaction_id:'P1-R002',
+    sq_name:'Diethyl squarate', sq_smiles:'O=C1C(OCC)=C(OCC)C1=O',
+    sq_iupac:'1,2-diethoxycyclobut-1-ene-3,4-dione',
+    am_name:'Aniline', am_smiles:'NC1=CC=CC=C1',
+    am_iupac:'aniline',
+    solvent:'EtOH', temperature:'RT', temperature_celsius:25,
+    time_h:4, additive:'Zn(OTf)₂ (13 mol%)',
+    pr_name:'N-Phenyl squaric monoamide ethyl ester',
+    pr_smiles:'O=C1C(OCC)=C(NC2=CC=CC=C2)C1=O',
+    pr_iupac:'3-(phenylamino)-4-ethoxycyclobut-3-ene-1,2-dione',
+    yield_percent:37.0,
+  },
+  {
+    id:3, dataset_version:'v0.1', batch_id:'batch_001',
+    paper_id:'paper_1', paper_source:'SynOpen 2023 — Long et al.',
+    reaction_id:'P1-R003',
+    sq_name:'Diethyl squarate', sq_smiles:'O=C1C(OCC)=C(OCC)C1=O',
+    sq_iupac:'1,2-diethoxycyclobut-1-ene-3,4-dione',
+    am_name:'4-Fluoroaniline', am_smiles:'NC1=CC=C(F)C=C1',
+    am_iupac:'4-fluoroaniline',
+    solvent:'EtOH', temperature:'RT', temperature_celsius:25,
+    time_h:12, additive:'Zn(OTf)₂ (20 mol%)',
+    pr_name:'N-(4-Fluorophenyl) squaric monoamide ethyl ester',
+    pr_smiles:'O=C1C(OCC)=C(NC2=CC=C(F)C=C2)C1=O',
+    pr_iupac:'4-ethoxy-3-((4-fluorophenyl)amino)cyclobut-3-ene-1,2-dione',
+    yield_percent:75.0,
+  },
+  {
+    id:4, dataset_version:'v0.1', batch_id:'batch_001',
+    paper_id:'paper_1', paper_source:'SynOpen 2023 — Long et al.',
+    reaction_id:'P1-R004',
+    sq_name:'Diethyl squarate', sq_smiles:'O=C1C(OCC)=C(OCC)C1=O',
+    sq_iupac:'1,2-diethoxycyclobut-1-ene-3,4-dione',
+    am_name:'3-Chloroaniline', am_smiles:'NC1=CC=CC(Cl)=C1',
+    am_iupac:'3-chloroaniline',
+    solvent:'EtOH', temperature:'RT', temperature_celsius:25,
+    time_h:14, additive:'Zn(OTf)₂ (10 mol%)',
+    pr_name:'N-(3-Chlorophenyl) squaric monoamide ethyl ester',
+    pr_smiles:'O=C1C(OCC)=C(NC2=CC(Cl)=CC=C2)C1=O',
+    pr_iupac:'3-((3-chlorophenyl)amino)-4-ethoxycyclobut-3-ene-1,2-dione',
+    yield_percent:26.0,
+  },
+  {
+    id:5, dataset_version:'v0.1', batch_id:'batch_001',
+    paper_id:'paper_1', paper_source:'SynOpen 2023 — Long et al.',
+    reaction_id:'P1-R005',
+    sq_name:'Diethyl squarate', sq_smiles:'O=C1C(OCC)=C(OCC)C1=O',
+    sq_iupac:'1,2-diethoxycyclobut-1-ene-3,4-dione',
+    am_name:'4-Chloroaniline', am_smiles:'NC1=CC=C(Cl)C=C1',
+    am_iupac:'4-chloroaniline',
+    solvent:'EtOH', temperature:'RT', temperature_celsius:25,
+    time_h:4, additive:'Zn(OTf)₂ (10 mol%)',
+    pr_name:'N-(4-Chlorophenyl) squaric monoamide ethyl ester',
+    pr_smiles:'O=C1C(OCC)=C(NC2=CC=C(Cl)C=C2)C1=O',
+    pr_iupac:'3-((4-chlorophenyl)amino)-4-ethoxycyclobut-3-ene-1,2-dione',
+    yield_percent:60.0,
+  },
+];
+
+let _nextId = SEED.length + 1;
+const genId = () => _nextId++;
+
+// ── SMILES validation ─────────────────────────────────────────────────────────
+function checkSmiles(s) {
+  if (!s || !s.trim()) return { ok: false, msg: 'Missing' };
+  let r = { ok: false, msg: 'Invalid SMILES' };
+  try {
+    SmilesDrawer.parse(s.trim(),
+      () => { r = { ok: true,  msg: 'Valid' }; },
+      (e) => { r = { ok: false, msg: e || 'Invalid SMILES' }; }
+    );
+  } catch(_) {}
+  return r;
+}
+
+// ── PubChem IUPAC lookup ──────────────────────────────────────────────────────
+async function fetchIUPAC(smiles) {
+  const enc = encodeURIComponent(smiles.trim());
+  const url = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/${enc}/property/IUPACName/JSON`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Not found in PubChem');
+  const data = await res.json();
+  return data.PropertyTable.Properties[0].IUPACName;
+}
+
+// ── Full reaction validation ───────────────────────────────────────────────────
+function validate(rxn) {
+  const sq = checkSmiles(rxn.sq_smiles);
+  const am = checkSmiles(rxn.am_smiles);
+  const pr = checkSmiles(rxn.pr_smiles);
+  const y  = parseFloat(rxn.yield_percent);
+  const yOk = !isNaN(y) && y >= 0 && y <= 100;
+  const sqNameOk = !!(rxn.sq_name && rxn.sq_name.trim());
+  const amNameOk = !!(rxn.am_name && rxn.am_name.trim());
+  const prNameOk = !!(rxn.pr_name && rxn.pr_name.trim());
+  const sqIupacOk = !!(rxn.sq_iupac && rxn.sq_iupac.trim());
+  const amIupacOk = !!(rxn.am_iupac && rxn.am_iupac.trim());
+  const prIupacOk = !!(rxn.pr_iupac && rxn.pr_iupac.trim());
+
+  const checks = [
+    sq.ok, am.ok, pr.ok, yOk,
+    sqNameOk, amNameOk, prNameOk,
+  ];
+  const score  = checks.filter(Boolean).length;
+  const pct    = Math.round((score / checks.length) * 100);
+  const status = score === checks.length ? 'READY'
+               : score >= Math.floor(checks.length * 0.6) ? 'REVIEW'
+               : 'INCOMPLETE';
+
+  const issues = [
+    !sq.ok      && { f:'Squarate SMILES',  m: sq.msg },
+    !am.ok      && { f:'Amine SMILES',     m: am.msg },
+    !pr.ok      && { f:'Product SMILES',   m: pr.msg },
+    !yOk        && { f:'Yield',            m:'Must be 0–100' },
+    !sqNameOk   && { f:'Squarate name',    m:'Missing' },
+    !amNameOk   && { f:'Amine name',       m:'Missing' },
+    !prNameOk   && { f:'Product name',     m:'Missing' },
+    !sqIupacOk  && { f:'Squarate IUPAC',   m:'Missing (click Fetch)' },
+    !amIupacOk  && { f:'Amine IUPAC',      m:'Missing (click Fetch)' },
+    !prIupacOk  && { f:'Product IUPAC',    m:'Missing (click Fetch)' },
+  ].filter(Boolean);
+
+  return { sq, am, pr, yOk, score, pct, status, issues };
+}
+
+// ── Molecule Canvas ────────────────────────────────────────────────────────────
+function MolCanvas({ smiles, size = 155 }) {
+  const ref  = useRef(null);
+  const [st, setSt] = useState('empty'); // empty | valid | invalid
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const t = setTimeout(() => {
+      const ctx = ref.current.getContext('2d');
+      ctx.clearRect(0, 0, size, size);
+      if (!smiles?.trim()) { setSt('empty'); return; }
+      try {
+        const d = new SmilesDrawer.Drawer({
+          width: size, height: size,
+          bondThickness: 1.4, fontSizeLarge: 7, fontSizeSmall: 5, padding: 10,
+        });
+        SmilesDrawer.parse(smiles.trim(),
+          (tree) => { d.draw(tree, ref.current, 'light', false); setSt('valid'); },
+          ()     => { setSt('invalid'); }
+        );
+      } catch { setSt('invalid'); }
+    }, 280);
+    return () => clearTimeout(t);
+  }, [smiles, size]);
+
+  return (
+    <div className="cbox-canvas-wrap" style={{ minHeight: size + 10 }}>
+      {st === 'empty' && (
+        <div style={{ fontSize:11, color:'#BBB', textAlign:'center', padding:8 }}>
+          Enter a SMILES code<br/>to preview structure
+        </div>
+      )}
+      {st === 'invalid' && (
+        <div style={{ fontSize:11, color:'#E53935', textAlign:'center', padding:8 }}>
+          <div style={{ fontSize:22, marginBottom:4 }}>⚠</div>
+          Invalid SMILES code
+        </div>
+      )}
+      <canvas
+        ref={ref}
+        width={size} height={size}
+        style={{ display: st === 'valid' ? 'block' : 'none' }}
+      />
+    </div>
+  );
+}
+
+// ── Compound Box ───────────────────────────────────────────────────────────────
+function CompoundBox({ role, color, nameKey, smilesKey, iupacKey, rxn, onChange }) {
+  const [fetching, setFetching] = useState(false);
+  const [fetchErr, setFetchErr] = useState('');
+  const smilesVal = rxn[smilesKey] || '';
+  const sc = checkSmiles(smilesVal);
+
+  const handleFetch = async () => {
+    if (!sc.ok) return;
+    setFetching(true); setFetchErr('');
+    try {
+      const name = await fetchIUPAC(smilesVal);
+      onChange(iupacKey, name);
+    } catch(e) {
+      setFetchErr('Not found in PubChem');
+    } finally {
+      setFetching(false);
+    }
+  };
+
+  return (
+    <div className="cbox">
+      {/* Role label */}
+      <div className="cbox-role" style={{ color }}>
+        {role}
+      </div>
+
+      {/* Structure preview */}
+      <MolCanvas smiles={smilesVal} size={155} />
+
+      {/* SMILES validity badge */}
+      <div style={{ display:'flex', justifyContent:'center' }}>
+        <span className="vtag" style={{
+          background: sc.ok ? '#E8F5E9' : smilesVal ? '#FFEBEE' : '#F5F5F5',
+          color:       sc.ok ? '#2E7D32' : smilesVal ? '#C62828' : '#999',
+        }}>
+          {sc.ok ? '✓ Valid SMILES' : smilesVal ? '✗ ' + sc.msg : '○ No SMILES'}
+        </span>
+      </div>
+
+      {/* Compound name */}
+      <div className="cbox-field">
+        <div className="cbox-label">Compound Name</div>
+        <input
+          className={`cbox-input ${!rxn[nameKey]?.trim() ? 'err' : ''}`}
+          value={rxn[nameKey] || ''}
+          onChange={e => onChange(nameKey, e.target.value)}
+          placeholder="e.g. Diethyl squarate"
+        />
+        {!rxn[nameKey]?.trim() && (
+          <span style={{ fontSize:9, color:'#E53935' }}>⚠ Name required</span>
+        )}
+      </div>
+
+      {/* SMILES */}
+      <div className="cbox-field">
+        <div className="cbox-label">SMILES Code</div>
+        <input
+          className={`cbox-input mono ${smilesVal && !sc.ok ? 'err' : ''}`}
+          value={smilesVal}
+          onChange={e => onChange(smilesKey, e.target.value)}
+          placeholder="Paste SMILES…"
+          spellCheck={false}
+        />
+      </div>
+
+      {/* IUPAC */}
+      <div className="cbox-field">
+        <div style={{ display:'flex', alignItems:'center', gap:5, marginBottom:3 }}>
+          <div className="cbox-label" style={{ marginBottom:0 }}>IUPAC Name</div>
+          <button
+            className="btn-sm"
+            onClick={handleFetch}
+            disabled={!sc.ok || fetching}
+            style={{
+              background: sc.ok ? '#E3F2FD' : '#F5F5F5',
+              color: sc.ok ? '#1565C0' : '#BBB',
+              marginLeft:'auto',
+            }}
+          >
+            {fetching ? '…' : '⟳ Fetch'}
+          </button>
+        </div>
+        <input
+          className="cbox-input"
+          value={rxn[iupacKey] || ''}
+          onChange={e => onChange(iupacKey, e.target.value)}
+          placeholder="IUPAC name or click Fetch"
+          style={{ fontSize:10.5 }}
+        />
+        {fetchErr && <span style={{ fontSize:9, color:'#E53935' }}>{fetchErr}</span>}
+        {!rxn[iupacKey]?.trim() && !fetchErr && (
+          <span style={{ fontSize:9, color:'#F57F17' }}>⚠ Missing — type or click Fetch</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Conditions (on arrow) ─────────────────────────────────────────────────────
+function ConditionsArrow({ rxn, onChange }) {
+  const [showCustomTemp, setShowCustomTemp] = useState(rxn.temperature === 'Custom');
+
+  const handleTemp = (v) => {
+    onChange('temperature', v);
+    setShowCustomTemp(v === 'Custom');
+  };
+
+  return (
+    <div className="arrow-wrap">
+      {/* Above arrow */}
+      <div className="arrow-cond" style={{ display:'flex', flexDirection:'column', gap:4 }}>
+        <div style={{ fontSize:9, fontWeight:700, color:'#AAA', textAlign:'center', letterSpacing:0.8 }}>
+          CONDITIONS
+        </div>
+        {/* Solvent */}
+        <div style={{ display:'flex', flexDirection:'column', gap:2, alignItems:'center' }}>
+          <span style={{ fontSize:9, color:'#888', fontWeight:600 }}>Solvent</span>
+          <select
+            className="cond-select"
+            value={rxn.solvent || 'EtOH'}
+            onChange={e => onChange('solvent', e.target.value)}
+            style={{ width:90 }}
+          >
+            {SOLVENTS.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
+        {/* Temperature */}
+        <div style={{ display:'flex', flexDirection:'column', gap:2, alignItems:'center' }}>
+          <span style={{ fontSize:9, color:'#888', fontWeight:600 }}>Temperature</span>
+          <select
+            className="cond-select"
+            value={rxn.temperature || 'RT'}
+            onChange={e => handleTemp(e.target.value)}
+            style={{ width:90 }}
+          >
+            {TEMP_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+          {showCustomTemp && (
+            <input
+              className="cond-input"
+              type="number"
+              placeholder="°C"
+              value={rxn.temperature_celsius || ''}
+              onChange={e => onChange('temperature_celsius', parseFloat(e.target.value))}
+              style={{ width:90 }}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Arrow */}
+      <div className="arrow-line">
+        <div className="arrow-shaft" />
+        <div className="arrow-head">▶</div>
+      </div>
+
+      {/* Below arrow */}
+      <div className="arrow-cond" style={{ display:'flex', flexDirection:'column', gap:4 }}>
+        {/* Additive */}
+        <div style={{ display:'flex', flexDirection:'column', gap:2, alignItems:'center' }}>
+          <span style={{ fontSize:9, color:'#888', fontWeight:600 }}>Additive</span>
+          <input
+            className="cond-input"
+            value={rxn.additive || 'None'}
+            onChange={e => onChange('additive', e.target.value)}
+            style={{ width:110, fontSize:10 }}
+          />
+        </div>
+        {/* Time */}
+        <div style={{ display:'flex', flexDirection:'column', gap:2, alignItems:'center' }}>
+          <span style={{ fontSize:9, color:'#888', fontWeight:600 }}>Time (h)</span>
+          <input
+            className="cond-input"
+            type="number" step="0.5" min="0"
+            value={rxn.time_h || ''}
+            onChange={e => onChange('time_h', parseFloat(e.target.value))}
+            style={{ width:70 }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Yield Display ─────────────────────────────────────────────────────────────
+function YieldDisplay({ rxn, onChange }) {
+  const y = parseFloat(rxn.yield_percent);
+  const ok = !isNaN(y) && y >= 0 && y <= 100;
+  const yc = ok ? (y >= 70 ? '#2E7D32' : y >= 40 ? '#E65100' : '#C62828') : '#999';
+  const yb = ok ? (y >= 70 ? '#E8F5E9' : y >= 40 ? '#FFF3E0' : '#FFEBEE') : '#F5F5F5';
+  const yl = ok ? (y >= 70 ? 'HIGH'   : y >= 40 ? 'MED'    : 'LOW')     : '—';
+
+  return (
+    <div className="yield-wrap">
+      <div style={{ fontSize:9, fontWeight:700, color:'#AAA', letterSpacing:1, textAlign:'center' }}>
+        YIELD
+      </div>
+      <div className="yield-pct" style={{ color: yc }}>
+        {ok ? y.toFixed(1) + '%' : '—'}
+      </div>
+      <div className="yield-label" style={{ background:yb, color:yc }}>{yl}</div>
+      <div className="yield-bar-bg">
+        <div className="yield-bar-fill"
+          style={{ width: (ok ? Math.min(y,100) : 0) + '%', background: yc }} />
+      </div>
+      {/* Editable yield field */}
+      <div style={{ display:'flex', flexDirection:'column', gap:3, alignItems:'center', marginTop:4 }}>
+        <span style={{ fontSize:9, color:'#888', fontWeight:600 }}>Edit yield (%)</span>
+        <input
+          type="number" min="0" max="100" step="0.1"
+          value={rxn.yield_percent ?? ''}
+          onChange={e => onChange('yield_percent', parseFloat(e.target.value))}
+          style={{
+            width:70, padding:'5px 7px', border:'1px solid #DDE3EE',
+            borderRadius:7, fontSize:12, textAlign:'center', background:'#FAFBFD',
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── Validation Side Panel ─────────────────────────────────────────────────────
+function ValidationPanel({ rxn }) {
+  const v = validate(rxn);
+  const sc = v.status === 'READY' ? '#2E7D32' : v.status === 'REVIEW' ? '#E65100' : '#C62828';
+  const sb = v.status === 'READY' ? '#E8F5E9' : v.status === 'REVIEW' ? '#FFF3E0' : '#FFEBEE';
+
+  const rows = [
+    { l:'Squarate SMILES',  ok: v.sq.ok,                  m: v.sq.msg },
+    { l:'Squarate name',    ok: !!(rxn.sq_name?.trim()),   m:'Missing' },
+    { l:'Squarate IUPAC',   ok: !!(rxn.sq_iupac?.trim()),  m:'Missing' },
+    { l:'Amine SMILES',     ok: v.am.ok,                  m: v.am.msg },
+    { l:'Amine name',       ok: !!(rxn.am_name?.trim()),   m:'Missing' },
+    { l:'Amine IUPAC',      ok: !!(rxn.am_iupac?.trim()),  m:'Missing' },
+    { l:'Product SMILES',   ok: v.pr.ok,                  m: v.pr.msg },
+    { l:'Product name',     ok: !!(rxn.pr_name?.trim()),   m:'Missing' },
+    { l:'Product IUPAC',    ok: !!(rxn.pr_iupac?.trim()),  m:'Missing' },
+    { l:'Yield (0–100%)',   ok: v.yOk,                    m:'Invalid value' },
+  ];
+
+  return (
+    <div style={{
+      background:'#fff', borderRadius:12, border:'1px solid #DDE3EE',
+      padding:18, width:220, flexShrink:0,
+      boxShadow:'0 1px 8px rgba(0,0,0,0.05)',
+    }}>
+      <div style={{ fontWeight:700, fontSize:13, color:'#333', marginBottom:12 }}>
+        Validation
+      </div>
+
+      {/* Status + score */}
+      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
+        <span style={{
+          padding:'4px 12px', borderRadius:20,
+          background:sb, color:sc, fontWeight:700, fontSize:12,
+        }}>
+          {v.status === 'READY' ? '✓' : '!'} {v.status}
+        </span>
+        <span style={{ fontSize:12, color:sc, fontWeight:700 }}>{v.pct}%</span>
+      </div>
+
+      {/* Score bar */}
+      <div style={{ height:6, background:'#EEEEEE', borderRadius:3, overflow:'hidden', marginBottom:14 }}>
+        <div style={{
+          width:v.pct+'%', height:'100%',
+          background:sc, borderRadius:3, transition:'width 0.4s',
+        }} />
+      </div>
+
+      {/* Check rows */}
+      {rows.map((r, i) => (
+        <div key={i} style={{
+          display:'flex', alignItems:'flex-start', gap:6,
+          padding:'4px 0', borderBottom:'1px solid #F5F5F5', fontSize:11,
+        }}>
+          <span style={{ color: r.ok ? '#2E7D32' : '#C62828', fontWeight:700, marginTop:1, flexShrink:0 }}>
+            {r.ok ? '✓' : '✗'}
+          </span>
+          <div>
+            <div style={{ color:'#333' }}>{r.l}</div>
+            {!r.ok && <div style={{ fontSize:9, color:'#C62828', marginTop:1 }}>{r.m}</div>}
+          </div>
+        </div>
+      ))}
+
+      {/* Summary */}
+      {v.issues.length === 0 ? (
+        <div style={{
+          marginTop:12, padding:'8px 10px', borderRadius:8,
+          background:'#E8F5E9', color:'#2E7D32', fontSize:11, fontWeight:600,
+        }}>
+          ✓ All fields complete
+        </div>
+      ) : (
+        <div style={{
+          marginTop:12, padding:'8px 10px', borderRadius:8,
+          background:'#FFF8E1', color:'#E65100', fontSize:10,
+        }}>
+          <div style={{ fontWeight:700, marginBottom:4 }}>
+            {v.issues.length} issue{v.issues.length > 1 ? 's' : ''} to fix:
+          </div>
+          {v.issues.slice(0,5).map((iss, i) => (
+            <div key={i} style={{ marginTop:2 }}>• {iss.f}: {iss.m}</div>
+          ))}
+          {v.issues.length > 5 && (
+            <div style={{ marginTop:2, color:'#AAA' }}>…+{v.issues.length - 5} more</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Dataset Summary Modal ─────────────────────────────────────────────────────
+function SummaryModal({ reactions, onClose }) {
+  const vs     = reactions.map(r => validate(r));
+  const ready  = vs.filter(v => v.status === 'READY').length;
+  const review = vs.filter(v => v.status === 'REVIEW').length;
+  const inc    = vs.filter(v => v.status === 'INCOMPLETE').length;
+  const avgQ   = (vs.reduce((s, v) => s + v.pct, 0) / vs.length).toFixed(0);
+  const avgY   = (reactions.reduce((s, r) => s + (parseFloat(r.yield_percent) || 0), 0) / reactions.length).toFixed(1);
+  const papers = [...new Set(reactions.map(r => r.paper_id))];
+  const isReady = ready === reactions.length;
+
+  const Stat = ({ l, v, c }) => (
+    <div style={{
+      background:'#F8F9FA', borderRadius:8, padding:'11px 14px',
+      border:'1px solid #EEEEEE',
+    }}>
+      <div style={{ fontSize:10, color:'#888', marginBottom:4 }}>{l}</div>
+      <div style={{ fontSize:22, fontWeight:800, color:c }}>{v}</div>
+    </div>
+  );
+
+  return (
+    <div className="modal-bg" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
+          <h2 style={{ fontWeight:800, fontSize:17, color:'#1565C0' }}>Dataset Summary</h2>
+          <button onClick={onClose} style={{
+            background:'#F5F5F5', border:'none', borderRadius:8,
+            width:32, height:32, fontSize:16, color:'#555',
+          }}>✕</button>
+        </div>
+
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:16 }}>
+          <Stat l="Total Reactions" v={reactions.length} c="#1565C0" />
+          <Stat l="Papers"          v={papers.length}    c="#546E7A" />
+          <Stat l="Avg Quality"     v={avgQ+'%'}         c="#2E7D32" />
+          <Stat l="Avg Yield"       v={avgY+'%'}         c="#E65100" />
+          <Stat l="Ready"           v={ready}            c="#2E7D32" />
+          <Stat l="Review / Fix"    v={review + inc}     c="#C62828" />
+        </div>
+
+        {/* Readiness */}
+        <div style={{
+          padding:'12px 16px', borderRadius:8, marginBottom:16,
+          background: isReady ? '#E8F5E9' : '#FFF8E1',
+          color: isReady ? '#2E7D32' : '#E65100',
+          fontWeight:600, fontSize:13,
+          display:'flex', alignItems:'center', gap:8,
+        }}>
+          <span style={{ fontSize:18 }}>{isReady ? '✓' : '⚠'}</span>
+          <div>
+            <div>
+              {isReady
+                ? 'Dataset is ready for model training.'
+                : `${ready}/${reactions.length} reactions ready — resolve flagged entries first.`
+              }
+            </div>
+            {inc > 0 && (
+              <div style={{ fontWeight:400, fontSize:11, marginTop:2 }}>
+                {inc} incomplete {inc === 1 ? 'entry' : 'entries'} must be fixed before training.
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Per-reaction table */}
+        <div style={{ fontSize:11, fontWeight:700, color:'#333', marginBottom:8 }}>
+          Reaction breakdown
+        </div>
+        <div style={{ border:'1px solid #EEEEEE', borderRadius:8, overflow:'hidden' }}>
+          <div style={{
+            display:'grid', gridTemplateColumns:'1.2fr 1.4fr 0.7fr 0.7fr 0.9fr',
+            padding:'6px 12px', background:'#F8F9FA',
+            fontSize:10, fontWeight:700, color:'#888',
+            borderBottom:'1px solid #EEEEEE',
+          }}>
+            <span>Rxn ID</span><span>Amine</span>
+            <span style={{ textAlign:'center' }}>Yield</span>
+            <span style={{ textAlign:'center' }}>Score</span>
+            <span style={{ textAlign:'center' }}>Status</span>
+          </div>
+          {reactions.map((r, i) => {
+            const v = vs[i];
+            const sc = v.status==='READY'?'#2E7D32':v.status==='REVIEW'?'#E65100':'#C62828';
+            const sb = v.status==='READY'?'#E8F5E9':v.status==='REVIEW'?'#FFF3E0':'#FFEBEE';
+            const y = parseFloat(r.yield_percent);
+            return (
+              <div key={r.id} style={{
+                display:'grid', gridTemplateColumns:'1.2fr 1.4fr 0.7fr 0.7fr 0.9fr',
+                padding:'6px 12px', borderBottom:'1px solid #F5F5F5',
+                fontSize:11, alignItems:'center',
+              }}>
+                <span style={{ fontFamily:'Courier New,monospace', color:'#555', fontSize:10 }}>
+                  {r.reaction_id}
+                </span>
+                <span style={{ color:'#333', fontSize:11 }}>{r.am_name || '—'}</span>
+                <span style={{ textAlign:'center', color:'#333' }}>
+                  {isNaN(y)?'—':y.toFixed(1)+'%'}
+                </span>
+                <span style={{ textAlign:'center', color:sc, fontWeight:700 }}>{v.pct}%</span>
+                <span style={{ textAlign:'center' }}>
+                  <span style={{
+                    padding:'2px 8px', borderRadius:10,
+                    background:sb, color:sc, fontSize:9, fontWeight:700,
+                  }}>
+                    {v.status}
+                  </span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Flagged issues */}
+        {vs.some(v => v.issues.length > 0) && (
+          <div style={{ marginTop:14 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'#333', marginBottom:8 }}>
+              Suggested manual review:
+            </div>
+            {reactions.map((r, i) => vs[i].issues.length > 0 && (
+              <div key={r.id} style={{
+                padding:'7px 10px', background:'#FFF8E1',
+                borderRadius:6, marginBottom:6, fontSize:10, color:'#555',
+              }}>
+                <span style={{ fontWeight:700, color:'#E65100' }}>{r.reaction_id}: </span>
+                {vs[i].issues.map(iss => `${iss.f} (${iss.m})`).join(' · ')}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── App ───────────────────────────────────────────────────────────────────────
+function App() {
+  const [reactions, setReactions] = useState(SEED);
+  const [idx,       setIdx]       = useState(0);
+  const [showSum,   setShowSum]   = useState(false);
+  const fileRef = useRef(null);
+
+  const rxn = reactions[idx] || reactions[0];
+  const v = validate(rxn);
+  const sc = v.status==='READY'?'#2E7D32':v.status==='REVIEW'?'#E65100':'#C62828';
+  const sb = v.status==='READY'?'#E8F5E9':v.status==='REVIEW'?'#FFF3E0':'#FFEBEE';
+
+  const go = (n) => setIdx(i => Math.max(0, Math.min(reactions.length-1, i+n)));
+
+  const update = (key, val) =>
+    setReactions(p => p.map((r,i) => i===idx ? {...r, [key]:val} : r));
+
+  const addNew = () => {
+    const r = {
+      ...SEED[0], id:genId(),
+      reaction_id:`NEW-R${String(reactions.length+1).padStart(3,'0')}`,
+      sq_name:'', sq_smiles:'', sq_iupac:'',
+      am_name:'', am_smiles:'', am_iupac:'',
+      pr_name:'', pr_smiles:'', pr_iupac:'',
+      yield_percent:'', additive:'None',
+    };
+    setReactions(p => [...p, r]);
+    setIdx(reactions.length);
+  };
+
+  const duplicate = () => {
+    const d = { ...rxn, id:genId(), reaction_id:rxn.reaction_id+'_copy' };
+    setReactions(p => [...p, d]);
+    setIdx(reactions.length);
+  };
+
+  const deleteRxn = () => {
+    if (reactions.length===1) return alert('Cannot delete the last reaction.');
+    if (!confirm(`Delete ${rxn.reaction_id}?`)) return;
+    const next = reactions.filter((_,i) => i!==idx);
+    setReactions(next);
+    setIdx(Math.min(idx, next.length-1));
+  };
+
+  const importExcel = (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const wb   = XLSX.read(new Uint8Array(ev.target.result), {type:'array'});
+        const ws   = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, {header:1});
+        if (rows.length < 2) return alert('No data rows found.');
+
+        const hdr = rows[0].map(h => String(h||'').toLowerCase().replace(/[^a-z0-9]/g,'_'));
+        const col = (...names) => names.map(n => hdr.indexOf(n)).find(i => i>=0) ?? -1;
+
+        const toY = (raw) => {
+          const n = parseFloat(raw);
+          return isNaN(n) ? '' : (n <= 1.0 ? parseFloat((n*100).toFixed(1)) : n);
+        };
+
+        const imported = rows.slice(1)
+          .filter(r => r.some(c => c!==null && c!==undefined && c!==''))
+          .map((row, i) => ({
+            id: genId(),
+            dataset_version: 'v0.1',
+            batch_id: `batch_${String(reactions.length+1).padStart(3,'0')}`,
+            paper_id:     row[col('paper_id','paper')] || 'imported',
+            paper_source: row[col('paper_source','source')] || file.name,
+            reaction_id:  row[col('reaction_id','rxn_id')] || `IMP-R${String(i+1).padStart(3,'0')}`,
+            sq_name:   row[col('squarate_compound_name','squarate_name','sq_name')] || '',
+            sq_smiles: row[col('squarate_smiles','sq_smiles')] || '',
+            sq_iupac:  row[col('squarate_iupac_name','sq_iupac')] || '',
+            am_name:   row[col('coupled_amine_compound_name','amine_name','am_name')] || '',
+            am_smiles: row[col('coupled_amine_smiles','amine_smiles','am_smiles')] || '',
+            am_iupac:  row[col('coupled_amine_iupac_name','amine_iupac','am_iupac')] || '',
+            solvent:   row[col('solvent')] || 'EtOH',
+            temperature: row[col('temperature')] || 'RT',
+            temperature_celsius: parseFloat(row[col('temperature_celsius')]) || 25,
+            time_h:    parseFloat(row[col('time_h','time')]) || '',
+            additive:  row[col('additive')] || 'None',
+            pr_name:   row[col('product_compound_name','product_name','pr_name')] || '',
+            pr_smiles: row[col('product_smiles','pr_smiles')] || '',
+            pr_iupac:  row[col('product_iupac_name','pr_iupac')] || '',
+            yield_percent: row[col('yield_percent','yield')] !== undefined ? toY(row[col('yield_percent','yield')]) : '',
+          }));
+
+        setReactions(p => [...p, ...imported]);
+        setIdx(reactions.length);
+        alert(`Imported ${imported.length} reaction(s) from "${file.name}"`);
+      } catch(err) { alert('Import error: ' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+    e.target.value = '';
+  };
+
+  const exportData = (fmt) => {
+    const rows = reactions.map(r => {
+      const vv = validate(r);
+      return {
+        dataset_version:r.dataset_version, batch_id:r.batch_id,
+        paper_id:r.paper_id, paper_source:r.paper_source, reaction_id:r.reaction_id,
+        squarate_compound_name:r.sq_name, squarate_smiles:r.sq_smiles, squarate_iupac_name:r.sq_iupac,
+        coupled_amine_compound_name:r.am_name, coupled_amine_smiles:r.am_smiles, coupled_amine_iupac_name:r.am_iupac,
+        solvent:r.solvent, temperature:r.temperature, temperature_celsius:r.temperature_celsius,
+        time_h:r.time_h, additive:r.additive,
+        product_compound_name:r.pr_name, product_smiles:r.pr_smiles, product_iupac_name:r.pr_iupac,
+        yield_percent:r.yield_percent,
+        validation_status:vv.status, data_quality_score_pct:vv.pct,
+        data_quality_notes: vv.issues.map(i=>`${i.f}: ${i.m}`).join('; ') || 'OK',
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(rows);
+    if (fmt === 'csv') {
+      const blob = new Blob([XLSX.utils.sheet_to_csv(ws)], {type:'text/csv'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download='chemdem_dataset.csv'; a.click();
+    } else {
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Dataset');
+      XLSX.writeFile(wb, 'chemdem_dataset.xlsx');
+    }
+  };
+
+  const Btn = ({onClick, children, bg='#1565C0', color='#fff', disabled=false}) => (
+    <button className="btn" onClick={onClick} disabled={disabled} style={{
+      background: disabled ? '#EEEEEE' : bg,
+      color: disabled ? '#AAA' : color,
+    }}>
+      {children}
+    </button>
+  );
+
+  return (
+    <div style={{ minHeight:'100vh', background:'#F0F2F6' }}>
+
+      {/* ── Header ── */}
+      <div style={{
+        background:'#1565C0', color:'#fff', height:50,
+        display:'flex', alignItems:'center', justifyContent:'space-between',
+        padding:'0 20px',
+        boxShadow:'0 2px 10px rgba(0,0,0,0.2)',
+      }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          <span style={{ fontWeight:800, fontSize:18, letterSpacing:-0.5 }}>Chemdem</span>
+          <span style={{
+            background:'rgba(255,255,255,0.18)', borderRadius:10,
+            padding:'2px 9px', fontSize:11,
+          }}>
+            Reaction Dataset Interface
+          </span>
+        </div>
+        <div style={{ display:'flex', gap:7, fontSize:11 }}>
+          {[rxn.dataset_version, rxn.batch_id, rxn.paper_id].map((t,i) => (
+            <span key={i} style={{
+              background:'rgba(255,255,255,0.15)', borderRadius:10, padding:'2px 9px',
+            }}>{t}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Navigation ── */}
+      <div style={{
+        background:'#fff', borderBottom:'1px solid #DDE3EE',
+        padding:'9px 20px',
+        display:'flex', alignItems:'center', gap:10, flexWrap:'wrap',
+      }}>
+        <Btn onClick={() => go(-1)} disabled={idx===0} bg="#E3F2FD" color="#1565C0">← Prev</Btn>
+
+        <span style={{ fontWeight:700, fontSize:14, color:'#333', minWidth:90, textAlign:'center' }}>
+          {idx+1} / {reactions.length}
+        </span>
+
+        <Btn onClick={() => go(1)} disabled={idx===reactions.length-1} bg="#E3F2FD" color="#1565C0">Next →</Btn>
+
+        {/* Dot indicators */}
+        <div style={{ display:'flex', gap:5, flexWrap:'wrap', marginLeft:4 }}>
+          {reactions.map((r,i) => {
+            const vv = validate(r);
+            const dc = vv.status==='READY'?'#2E7D32':vv.status==='REVIEW'?'#E65100':'#C62828';
+            return (
+              <button key={r.id} className="rxn-dot"
+                onClick={() => setIdx(i)}
+                title={`${r.reaction_id} — ${vv.status}`}
+                style={{
+                  background: i===idx ? dc : dc+'66',
+                  border: i===idx ? `2px solid ${dc}` : '2px solid transparent',
+                }}
+              />
+            );
+          })}
+        </div>
+
+        <div style={{ flex:1 }} />
+
+        <span style={{
+          fontFamily:'Courier New,monospace', fontWeight:600,
+          fontSize:13, color:'#555',
+        }}>
+          {rxn.reaction_id}
+        </span>
+        <span style={{ fontSize:11, color:'#AAA' }}>{rxn.paper_source}</span>
+        <span style={{
+          padding:'3px 12px', borderRadius:20,
+          background:sb, color:sc, fontWeight:700, fontSize:11,
+        }}>
+          {v.status === 'READY' ? '✓' : '!'} {v.status}
+        </span>
+      </div>
+
+      {/* ── Main ── */}
+      <div style={{ padding:'16px 20px' }}>
+
+        {/* Reaction scheme card */}
+        <div className="card" style={{ marginBottom:14, overflow:'hidden' }}>
+          <div className="card-header">
+            <span style={{ fontWeight:700, fontSize:13, color:'#333' }}>Reaction Scheme</span>
+            <span style={{ marginLeft:'auto', fontSize:11, color:'#AAA' }}>
+              Click any field inside the boxes to edit
+            </span>
+          </div>
+
+          {/* Scheme row */}
+          <div className="rxn-row">
+            <CompoundBox
+              role="Squarate" color="#7B1FA2"
+              nameKey="sq_name" smilesKey="sq_smiles" iupacKey="sq_iupac"
+              rxn={rxn} onChange={update}
+            />
+
+            <div className="rxn-plus">+</div>
+
+            <CompoundBox
+              role="Coupled Amine" color="#1565C0"
+              nameKey="am_name" smilesKey="am_smiles" iupacKey="am_iupac"
+              rxn={rxn} onChange={update}
+            />
+
+            <ConditionsArrow rxn={rxn} onChange={update} />
+
+            <CompoundBox
+              role="Product" color="#2E7D32"
+              nameKey="pr_name" smilesKey="pr_smiles" iupacKey="pr_iupac"
+              rxn={rxn} onChange={update}
+            />
+
+            <YieldDisplay rxn={rxn} onChange={update} />
+          </div>
+        </div>
+
+        {/* Meta fields + Validation */}
+        <div style={{ display:'flex', gap:14, flexWrap:'wrap', alignItems:'flex-start', marginBottom:14 }}>
+
+          {/* Metadata */}
+          <div className="card" style={{ flex:1, minWidth:260, padding:18 }}>
+            <div style={{ fontWeight:700, fontSize:13, color:'#333', marginBottom:14 }}>
+              Reaction Metadata
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px 16px' }}>
+              {[
+                ['Reaction ID',       'reaction_id',      'text'],
+                ['Paper ID',          'paper_id',         'text'],
+                ['Dataset Version',   'dataset_version',  'text'],
+                ['Batch ID',          'batch_id',         'text'],
+                ['Paper Source',      'paper_source',     'text'],
+              ].map(([label, key, type]) => (
+                <div key={key} style={{ display:'flex', flexDirection:'column', gap:3,
+                  gridColumn: key==='paper_source' ? '1 / -1' : 'auto' }}>
+                  <label style={{ fontSize:10, fontWeight:700, color:'#777' }}>{label}</label>
+                  <input
+                    type={type}
+                    value={rxn[key] || ''}
+                    onChange={e => update(key, e.target.value)}
+                    style={{
+                      padding:'6px 8px', border:'1px solid #DDE3EE',
+                      borderRadius:7, fontSize:11.5, background:'#FAFBFD', width:'100%',
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Validation panel */}
+          <ValidationPanel rxn={rxn} />
+        </div>
+
+        {/* Toolbar */}
+        <div className="card" style={{
+          padding:'12px 18px',
+          display:'flex', gap:8, flexWrap:'wrap', alignItems:'center',
+        }}>
+          <span style={{ fontSize:11, fontWeight:700, color:'#AAA', marginRight:2 }}>DATASET</span>
+          <Btn onClick={() => fileRef.current.click()} bg="#1565C0">↑ Import Excel</Btn>
+          <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv"
+            onChange={importExcel} style={{ display:'none' }} />
+          <Btn onClick={() => exportData('xlsx')} bg="#2E7D32">↓ Excel</Btn>
+          <Btn onClick={() => exportData('csv')}  bg="#546E7A">↓ CSV</Btn>
+
+          <div style={{ width:1, height:24, background:'#EEEEEE', margin:'0 4px' }} />
+
+          <span style={{ fontSize:11, fontWeight:700, color:'#AAA', marginRight:2 }}>REACTIONS</span>
+          <Btn onClick={addNew}    bg="#E3F2FD" color="#1565C0">+ Add New</Btn>
+          <Btn onClick={duplicate} bg="#E8F5E9" color="#2E7D32">⧉ Duplicate</Btn>
+          <Btn onClick={deleteRxn} bg="#FFEBEE" color="#C62828">✕ Delete</Btn>
+
+          <div style={{ flex:1 }} />
+
+          <Btn onClick={() => setShowSum(true)} bg="#E65100">◎ Dataset Summary</Btn>
+        </div>
+      </div>
+
+      {showSum && <SummaryModal reactions={reactions} onClose={() => setShowSum(false)} />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

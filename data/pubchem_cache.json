@@ -1,0 +1,330 @@
+{
+  "C1CNC1": {
+    "cid": 10422,
+    "pubchem_iupac": "azetidine",
+    "pubchem_formula": "C3H7N",
+    "pubchem_smiles": "C1CNC1",
+    "pubchem_mw": "57.09",
+    "pubchem_cas": "503-29-7"
+  },
+  "NCc1ccccc1": {
+    "cid": 7504,
+    "pubchem_iupac": "phenylmethanamine",
+    "pubchem_formula": "C7H9N",
+    "pubchem_smiles": "C1=CC=C(C=C1)CN",
+    "pubchem_mw": "107.15",
+    "pubchem_cas": "100-46-9"
+  },
+  "Cc1ccccc1N": {
+    "cid": 7242,
+    "pubchem_iupac": "2-methylaniline",
+    "pubchem_formula": "C7H9N",
+    "pubchem_smiles": "CC1=CC=CC=C1N",
+    "pubchem_mw": "107.15",
+    "pubchem_cas": "95-53-4"
+  },
+  "C1CCNC1": {
+    "cid": 31268,
+    "pubchem_iupac": "pyrrolidine",
+    "pubchem_formula": "C4H9N",
+    "pubchem_smiles": "C1CCNC1",
+    "pubchem_mw": "71.12",
+    "pubchem_cas": "123-75-1"
+  },
+  "Nc1ccc(O)cc1": {
+    "cid": 403,
+    "pubchem_iupac": "4-aminophenol",
+    "pubchem_formula": "C6H7NO",
+    "pubchem_smiles": "C1=CC(=CC=C1N)O",
+    "pubchem_mw": "109.13",
+    "pubchem_cas": "123-30-8"
+  },
+  "CC1COCCNC1C": {
+    "cid": 57973748,
+    "pubchem_iupac": "5,6-dimethyl-1,4-oxazepane",
+    "pubchem_formula": "C7H15NO",
+    "pubchem_smiles": "CC1COCCNC1C",
+    "pubchem_mw": "129.20",
+    "pubchem_cas": ""
+  },
+  "CC(C)(C)OC(=O)N1CCNCC1": {
+    "cid": 143452,
+    "pubchem_iupac": "tert-butyl piperazine-1-carboxylate",
+    "pubchem_formula": "C9H18N2O2",
+    "pubchem_smiles": "CC(C)(C)OC(=O)N1CCNCC1",
+    "pubchem_mw": "186.25",
+    "pubchem_cas": "57260-71-6"
+  },
+  "Nc1ccccc1Cl": {
+    "cid": 7240,
+    "pubchem_iupac": "2-chloroaniline",
+    "pubchem_formula": "C6H6ClN",
+    "pubchem_smiles": "C1=CC=C(C(=C1)N)Cl",
+    "pubchem_mw": "127.57",
+    "pubchem_cas": "95-51-2"
+  },
+  "Nc1ccccc1O": {
+    "cid": 5801,
+    "pubchem_iupac": "2-aminophenol",
+    "pubchem_formula": "C6H7NO",
+    "pubchem_smiles": "C1=CC=C(C(=C1)N)O",
+    "pubchem_mw": "109.13",
+    "pubchem_cas": "95-55-6"
+  },
+  "Nc1ccc(Br)cc1": {
+    "cid": 7807,
+    "pubchem_iupac": "4-bromoaniline",
+    "pubchem_formula": "C6H6BrN",
+    "pubchem_smiles": "C1=CC(=CC=C1N)Br",
+    "pubchem_mw": "172.02",
+    "pubchem_cas": "106-40-1"
+  },
+  "COc1cccc(N)c1": {
+    "cid": 10824,
+    "pubchem_iupac": "3-methoxyaniline",
+    "pubchem_formula": "C7H9NO",
+    "pubchem_smiles": "COC1=CC=CC(=C1)N",
+    "pubchem_mw": "123.15",
+    "pubchem_cas": "536-90-3"
+  },
+  "CC1CN(C(=O)OC(C)(C)C)CC(C)N1": {
+    "cid": 22219990,
+    "pubchem_iupac": "tert-butyl 3,5-dimethylpiperazine-1-carboxylate",
+    "pubchem_formula": "C11H22N2O2",
+    "pubchem_smiles": "CC1CN(CC(N1)C)C(=O)OC(C)(C)C",
+    "pubchem_mw": "214.30",
+    "pubchem_cas": "639068-43-2"
+  },
+  "CNCCNC": {
+    "cid": 8070,
+    "pubchem_iupac": "N,N'-dimethylethane-1,2-diamine",
+    "pubchem_formula": "C4H12N2",
+    "pubchem_smiles": "CNCCNC",
+    "pubchem_mw": "88.15",
+    "pubchem_cas": "110-70-3"
+  },
+  "Nc1cccc(O)c1": {
+    "cid": 11568,
+    "pubchem_iupac": "3-aminophenol",
+    "pubchem_formula": "C6H7NO",
+    "pubchem_smiles": "C1=CC(=CC(=C1)O)N",
+    "pubchem_mw": "109.13",
+    "pubchem_cas": "591-27-5"
+  },
+  "Nc1ccc(F)cc1": {
+    "cid": 9731,
+    "pubchem_iupac": "4-fluoroaniline",
+    "pubchem_formula": "C6H6FN",
+    "pubchem_smiles": "C1=CC(=CC=C1N)F",
+    "pubchem_mw": "111.12",
+    "pubchem_cas": "371-40-4"
+  },
+  "Nc1cccc(C(F)(F)F)c1": {
+    "cid": 7375,
+    "pubchem_iupac": "3-(trifluoromethyl)aniline",
+    "pubchem_formula": "C7H6F3N",
+    "pubchem_smiles": "C1=CC(=CC(=C1)N)C(F)(F)F",
+    "pubchem_mw": "161.12",
+    "pubchem_cas": "98-16-8"
+  },
+  "Brc1ccc2c(c1)NCCC2": {
+    "cid": 13865047,
+    "pubchem_iupac": "7-bromo-1,2,3,4-tetrahydroquinoline",
+    "pubchem_formula": "C9H10BrN",
+    "pubchem_smiles": "C1CC2=C(C=C(C=C2)Br)NC1",
+    "pubchem_mw": "212.09",
+    "pubchem_cas": "114744-51-3"
+  },
+  "C1CCCNCC1": {
+    "cid": 8119,
+    "pubchem_iupac": "azepane",
+    "pubchem_formula": "C6H13N",
+    "pubchem_smiles": "C1CCCNCC1",
+    "pubchem_mw": "99.17",
+    "pubchem_cas": "111-49-9"
+  },
+  "NCc1ccccc1Br": {
+    "cid": 334072,
+    "pubchem_iupac": "(2-bromophenyl)methanamine",
+    "pubchem_formula": "C7H8BrN",
+    "pubchem_smiles": "C1=CC=C(C(=C1)CN)Br",
+    "pubchem_mw": "186.05",
+    "pubchem_cas": "3959-05-5"
+  },
+  "NCc1cccc(Br)c1": {
+    "cid": 457587,
+    "pubchem_iupac": "(3-bromophenyl)methanamine",
+    "pubchem_formula": "C7H8BrN",
+    "pubchem_smiles": "C1=CC(=CC(=C1)Br)CN",
+    "pubchem_mw": "186.05",
+    "pubchem_cas": "10269-01-9"
+  },
+  "Nc1cccc(Cl)c1": {
+    "cid": 7932,
+    "pubchem_iupac": "3-chloroaniline",
+    "pubchem_formula": "C6H6ClN",
+    "pubchem_smiles": "C1=CC(=CC(=C1)Cl)N",
+    "pubchem_mw": "127.57",
+    "pubchem_cas": "108-42-9"
+  },
+  "Nc1ccc(C(F)(F)F)cc1": {
+    "cid": 9964,
+    "pubchem_iupac": "4-(trifluoromethyl)aniline",
+    "pubchem_formula": "C7H6F3N",
+    "pubchem_smiles": "C1=CC(=CC=C1C(F)(F)F)N",
+    "pubchem_mw": "161.12",
+    "pubchem_cas": "455-14-1"
+  },
+  "C1CNCCN1": {
+    "cid": 4837,
+    "pubchem_iupac": "piperazine",
+    "pubchem_formula": "C4H10N2",
+    "pubchem_smiles": "C1CNCCN1",
+    "pubchem_mw": "86.14",
+    "pubchem_cas": "110-85-0"
+  },
+  "C1CCNCC1": {
+    "cid": 8082,
+    "pubchem_iupac": "piperidine",
+    "pubchem_formula": "C5H11N",
+    "pubchem_smiles": "C1CCNCC1",
+    "pubchem_mw": "85.15",
+    "pubchem_cas": "110-89-4"
+  },
+  "NCc1ccc(Br)cc1": {
+    "cid": 77571,
+    "pubchem_iupac": "(4-bromophenyl)methanamine",
+    "pubchem_formula": "C7H8BrN",
+    "pubchem_smiles": "C1=CC(=CC=C1CN)Br",
+    "pubchem_mw": "186.05",
+    "pubchem_cas": "3959-07-7"
+  },
+  "NCc1ccccc1Cl": {
+    "cid": 66648,
+    "pubchem_iupac": "(2-chlorophenyl)methanamine",
+    "pubchem_formula": "C7H8ClN",
+    "pubchem_smiles": "C1=CC=C(C(=C1)CN)Cl",
+    "pubchem_mw": "141.60",
+    "pubchem_cas": "89-97-4"
+  },
+  "COc1ccc(N)cc1": {
+    "cid": 7732,
+    "pubchem_iupac": "4-methoxyaniline",
+    "pubchem_formula": "C7H9NO",
+    "pubchem_smiles": "COC1=CC=C(C=C1)N",
+    "pubchem_mw": "123.15",
+    "pubchem_cas": "104-94-9"
+  },
+  "CCOc1c(OCC)c(=O)c1=O": {
+    "cid": 123228,
+    "pubchem_iupac": "3,4-diethoxycyclobut-3-ene-1,2-dione",
+    "pubchem_formula": "C8H10O4",
+    "pubchem_smiles": "CCOC1=C(C(=O)C1=O)OCC",
+    "pubchem_mw": "170.16",
+    "pubchem_cas": "5231-87-8"
+  },
+  "Nc1ccccc1Br": {
+    "cid": 11992,
+    "pubchem_iupac": "2-bromoaniline",
+    "pubchem_formula": "C6H6BrN",
+    "pubchem_smiles": "C1=CC=C(C(=C1)N)Br",
+    "pubchem_mw": "172.02",
+    "pubchem_cas": "615-36-1"
+  },
+  "Nc1ccccc1": {
+    "cid": 6115,
+    "pubchem_iupac": "aniline",
+    "pubchem_formula": "C6H7N",
+    "pubchem_smiles": "C1=CC=C(C=C1)N",
+    "pubchem_mw": "93.13",
+    "pubchem_cas": "62-53-3"
+  },
+  "Nc1ccc(Cl)cc1": {
+    "cid": 7812,
+    "pubchem_iupac": "4-chloroaniline",
+    "pubchem_formula": "C6H6ClN",
+    "pubchem_smiles": "C1=CC(=CC=C1N)Cl",
+    "pubchem_mw": "127.57",
+    "pubchem_cas": "106-47-8"
+  },
+  "Cc1cccc(N)c1": {
+    "cid": 7934,
+    "pubchem_iupac": "3-methylaniline",
+    "pubchem_formula": "C7H9N",
+    "pubchem_smiles": "CC1=CC(=CC=C1)N",
+    "pubchem_mw": "107.15",
+    "pubchem_cas": "108-44-1"
+  },
+  "NCc1ccc(Cl)cc1": {
+    "cid": 66036,
+    "pubchem_iupac": "(4-chlorophenyl)methanamine",
+    "pubchem_formula": "C7H8ClN",
+    "pubchem_smiles": "C1=CC(=CC=C1CN)Cl",
+    "pubchem_mw": "141.60",
+    "pubchem_cas": "104-86-9"
+  },
+  "C1CSCN1": {
+    "cid": 10444,
+    "pubchem_iupac": "1,3-thiazolidine",
+    "pubchem_formula": "C3H7NS",
+    "pubchem_smiles": "C1CSCN1",
+    "pubchem_mw": "89.16",
+    "pubchem_cas": "504-78-9"
+  },
+  "C1COCCN1": {
+    "cid": 8083,
+    "pubchem_iupac": "morpholine",
+    "pubchem_formula": "C4H9NO",
+    "pubchem_smiles": "C1COCCN1",
+    "pubchem_mw": "87.12",
+    "pubchem_cas": "110-91-8"
+  },
+  "O=S1(=O)CCNCC1": {
+    "cid": 6484228,
+    "pubchem_iupac": "1,4-thiazinane 1,1-dioxide",
+    "pubchem_formula": "C4H9NO2S",
+    "pubchem_smiles": "C1CS(=O)(=O)CCN1",
+    "pubchem_mw": "135.19",
+    "pubchem_cas": "39093-93-1"
+  },
+  "CC(N)CNC(C)C": {
+    "cid": 21491528,
+    "pubchem_iupac": "1-N-propan-2-ylpropane-1,2-diamine",
+    "pubchem_formula": "C6H16N2",
+    "pubchem_smiles": "CC(C)NCC(C)N",
+    "pubchem_mw": "116.20",
+    "pubchem_cas": "64034-07-7"
+  },
+  "Nc1cccc(Br)c1": {
+    "cid": 11562,
+    "pubchem_iupac": "3-bromoaniline",
+    "pubchem_formula": "C6H6BrN",
+    "pubchem_smiles": "C1=CC(=CC(=C1)Br)N",
+    "pubchem_mw": "172.02",
+    "pubchem_cas": "591-19-5"
+  },
+  "C1CNCSC1": {
+    "cid": 120280,
+    "pubchem_iupac": "1,3-thiazinane",
+    "pubchem_formula": "C4H9NS",
+    "pubchem_smiles": "C1CNCSC1",
+    "pubchem_mw": "103.19",
+    "pubchem_cas": "543-71-5"
+  },
+  "Cc1ccc(N)cc1": {
+    "cid": 7813,
+    "pubchem_iupac": "4-methylaniline",
+    "pubchem_formula": "C7H9N",
+    "pubchem_smiles": "CC1=CC=C(C=C1)N",
+    "pubchem_mw": "107.15",
+    "pubchem_cas": "106-49-0"
+  },
+  "COc1ccccc1N": {
+    "cid": 7000,
+    "pubchem_iupac": "2-methoxyaniline",
+    "pubchem_formula": "C7H9NO",
+    "pubchem_smiles": "COC1=CC=CC=C1N",
+    "pubchem_mw": "123.15",
+    "pubchem_cas": "90-04-0"
+  }
+}
