@@ -947,6 +947,14 @@ function ResultPanel({ result }) {
   const confClr   = confLevel.startsWith('high') ? '#16A34A' : confLevel.startsWith('medium') ? '#D97706' : '#DC2626';
   const confLabel = conf?.label || (confLevel.startsWith('high') ? 'High' : confLevel.startsWith('medium') ? 'Medium' : 'Low');
 
+  // Validation warnings
+  const amineWarnings = result.amine_validation?.warnings || [];
+  const sqWarnings    = result.squarate_validation?.warnings || [];
+  const allWarnings   = [
+    ...amineWarnings.map(w => ({ label: 'Amine', msg: w })),
+    ...sqWarnings.map(w =>    ({ label: 'Squarate', msg: w })),
+  ];
+
   // Match badge
   const matchBadge = {
     exact:     { bg:'#ECFDF5', color:'#065F46', border:'#A7F3D0', label:'✓ Exact match in dataset' },
@@ -1021,6 +1029,24 @@ function ResultPanel({ result }) {
             }}>⚡ Offline mode</span>
           )}
         </div>
+
+        {/* Validation warnings */}
+        {allWarnings.length > 0 && (
+          <div style={{ marginTop:12, display:'flex', flexDirection:'column', gap:6 }}>
+            {allWarnings.map((w, i) => (
+              <div key={i} style={{
+                display:'flex', alignItems:'flex-start', gap:8,
+                padding:'7px 11px', borderRadius:8,
+                background:'#FFFBEB', border:'1px solid #FDE68A',
+              }}>
+                <span style={{ fontSize:13, lineHeight:1 }}>⚠</span>
+                <span style={{ fontSize:11, color:'#92400E', lineHeight:1.5 }}>
+                  <strong>{w.label}:</strong> {w.msg}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── Yield Breakdown Table ────────────────────────────────────────── */}

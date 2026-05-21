@@ -27,22 +27,15 @@ _PAT_ANILINE  = Chem.MolFromSmarts("Nc1ccccc1")
 _PAT_BENZYLAM = Chem.MolFromSmarts("NCc1ccccc1")
 _PAT_PIPERAZ  = Chem.MolFromSmarts("[NH]1CC[NH]CC1")      # unprotected piperazine
 _PAT_EDG      = Chem.MolFromSmarts("Nc1ccc([OH,OC,C])cc1")   # para ED group on aniline
-_PAT_EWG      = Chem.MolFromSmarts("Nc1ccc([F,Cl,Br,C(F)(F)F])cc1")
+# EWG patterns split by atom type — comma-OR doesn't parse in aromatic SMARTS context
+_PAT_EWG_HAL  = Chem.MolFromSmarts("Nc1ccc([F,Cl,Br])cc1")
+_PAT_EWG_CF3  = Chem.MolFromSmarts("Nc1ccccc1C(F)(F)F")
 
 # ── Reaction SMARTS for bis-squaramide ───────────────────────────────────────
-# The monoamide still has one OEt that can react with a second amine.
-_RXN_BIS_PRIMARY = AllChem.ReactionFromSmarts(
-    "[NH2:1].[c:2]1([O:6]CC)[c:3]([NH1:8][*:7])[c:4](=O)[c:5]1=O"
-    ">>"
-    "[NH1:1][c:2]1[c:3]([NH1:8][*:7])[c:4](=O)[c:5]1=O"
-)
-_RXN_BIS_SECONDARY = AllChem.ReactionFromSmarts(
-    "[NH2:1].[c:2]1([O:6]CC)[c:3]([N:8]([*:7])[*:9])[c:4](=O)[c:5]1=O"
-    ">>"
-    "[NH1:1][c:2]1[c:3]([N:8]([*:7])[*:9])[c:4](=O)[c:5]1=O"
-)
-_RXN_BIS_CYCLIC = AllChem.ReactionFromSmarts(
-    "[NH1:1].[c:2]1([O:6]CC)[c:3]([N:8]1CCOCC1)[c:4](=O)[c:5]1=O"
+# Replace the remaining OEt on the monoamide with the amine's N fragment.
+# Uses a single generic SMARTS that matches [NH2] or [NH1] amines.
+_RXN_BIS = AllChem.ReactionFromSmarts(
+    "[N:1].[c:2]1([O:6]CC)[c:3]([N:8])[c:4](=O)[c:5]1=O"
     ">>"
     "[N:1][c:2]1[c:3]([N:8])[c:4](=O)[c:5]1=O"
 )
@@ -50,24 +43,20 @@ _RXN_BIS_CYCLIC = AllChem.ReactionFromSmarts(
 
 def _compute_bis_smiles(amine_smiles: str, monoamide_smiles: str) -> str:
     """
-    Try to compute the bis-squaramide SMILES by reacting the monoamide
-    with a second equivalent of amine.
+    Compute the bis-squaramide SMILES by substituting the remaining OEt
+    on the monoamide with a second equivalent of the amine.
+    Returns canonical SMILES or '' on failure.
     """
     try:
-        amine_mol  = Chem.MolFromSmiles(amine_smiles)
-        mono_mol   = Chem.MolFromSmiles(monoamide_smiles)
+        amine_mol = Chem.MolFromSmiles(amine_smiles)
+        mono_mol  = Chem.MolFromSmiles(monoamide_smiles)
         if amine_mol is None or mono_mol is None:
             return ""
-
-        for rxn in (_RXN_BIS_PRIMARY, _RXN_BIS_SECONDARY):
-            prods = rxn.RunReactants((amine_mol, mono_mol))
-            if prods:
-                p = prods[0][0]
-                try:
-                    Chem.SanitizeMol(p)
-                    return Chem.MolToSmiles(p)
-                except Exception:
-                    continue
+        prods = _RXN_BIS.RunReactants((amine_mol, mono_mol))
+        if prods:
+            p = prods[0][0]
+            Chem.SanitizeMol(p)
+            return Chem.MolToSmiles(p)
     except Exception:
         pass
     return ""
