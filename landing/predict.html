@@ -420,7 +420,7 @@ function AutocompleteInput({ label, value, onChange, onSelect, placeholder, role
 
   const lookupViaApi = async (query) => {
     try {
-      const resp = await fetch('http://localhost:8000/lookup', {
+      const resp = await fetch('https://chemdem-production.up.railway.app/lookup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier: query }),
@@ -1291,7 +1291,7 @@ function App() {
             ? { text: '? Uncertain product', color: '#9CA3AF' }
             : { text: '✗ No reaction', color: '#DC2626' };
 
-  const API_BASE = 'http://localhost:8000';
+  const API_BASE = 'https://chemdem-production.up.railway.app';
 
   const handleSubmit = async () => {
     setError('');
