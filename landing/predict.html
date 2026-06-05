@@ -575,7 +575,7 @@ function AutocompleteInput({ label, value, onChange, onSelect, placeholder, role
       {/* Dropdown */}
       {isOpen && (
         <div className="ac-list" style={{
-          position:'absolute', top:'100%', left:0, right:0, zIndex:1000,
+          position:'absolute', top:'100%', left:0, right:0, zIndex:9999,
           background:'#FFFFFF',
           border:'1.5px solid #2563EB', borderTop:'none',
           borderRadius:'0 0 12px 12px',
@@ -1367,7 +1367,7 @@ function App() {
       <div style={{
         background:'#FFFFFF', borderRadius:20,
         boxShadow:'0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)',
-        overflow:'hidden',
+        overflow:'visible',
       }}>
 
         {/* ── Tab bar ── */}
