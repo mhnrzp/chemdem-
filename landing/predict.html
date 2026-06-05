@@ -409,9 +409,28 @@ function AutocompleteInput({ label, value, onChange, onSelect, placeholder, role
   const [apiResult,    setApiResult]  = useState(null);   // resolved compound | null
   const [apiStatus,    setApiStatus]  = useState('idle'); // 'idle'|'loading'|'done'|'error'
   const [activeIdx,    setActiveIdx]  = useState(-1);
+  const [dropPos,      setDropPos]    = useState({ top:0, left:0, width:0 });
   const debounceRef = useRef(null);
   const wrapRef     = useRef(null);
   const inputRef    = useRef(null);
+
+  // Update dropdown position whenever it opens or window scrolls/resizes
+  useEffect(() => {
+    if (!open) return;
+    const update = () => {
+      if (wrapRef.current) {
+        const r = wrapRef.current.getBoundingClientRect();
+        setDropPos({ top: r.bottom, left: r.left, width: r.width });
+      }
+    };
+    update();
+    window.addEventListener('scroll', update, true);
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update, true);
+      window.removeEventListener('resize', update);
+    };
+  }, [open]);
 
   // Close when clicking outside
   useEffect(() => {
@@ -572,15 +591,19 @@ function AutocompleteInput({ label, value, onChange, onSelect, placeholder, role
         )}
       </div>
 
-      {/* Dropdown */}
+      {/* Dropdown — fixed position to escape any overflow:hidden parent */}
       {isOpen && (
         <div className="ac-list" style={{
-          position:'absolute', top:'100%', left:0, right:0, zIndex:9999,
+          position:'fixed',
+          top: dropPos.top,
+          left: dropPos.left,
+          width: dropPos.width,
+          zIndex:9999,
           background:'#FFFFFF',
           border:'1.5px solid #2563EB', borderTop:'none',
           borderRadius:'0 0 12px 12px',
           boxShadow:'0 8px 24px rgba(37,99,235,0.12), 0 2px 6px rgba(0,0,0,0.06)',
-          maxHeight:288, overflowY:'auto',
+          maxHeight:300, overflowY:'auto',
         }}>
           {/* ── Local results ── */}
           {localResults.map((c, i) => (
@@ -1367,7 +1390,7 @@ function App() {
       <div style={{
         background:'#FFFFFF', borderRadius:20,
         boxShadow:'0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)',
-        overflow:'visible',
+        overflow:'hidden',
       }}>
 
         {/* ── Tab bar ── */}
