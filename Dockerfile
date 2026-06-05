@@ -15,8 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend source
 COPY backend/ .
 
-# Expose port
-EXPOSE 8000
+# Expose port (7860 for HF Spaces, 8000 for Railway via PORT env var)
+EXPOSE 7860
 
-# Start FastAPI on port 8000
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start FastAPI — use $PORT if set (Railway sets 8000), otherwise 7860 (HF Spaces default)
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-7860}"]
