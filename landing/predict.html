@@ -1454,29 +1454,25 @@ function App() {
           justifyContent:'center', gap:14, flexWrap:'wrap',
         }}>
           {/* SM1 */}
-          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:5 }}>
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:5, minHeight:220 }}>
             <PreviewBox label="SM1 preview" smiles={sm1Smiles} formula={sm1.compound?.formula} />
-            {sm1.compound && (
-              <span style={{ fontSize:10, color:'#9CA3AF', fontWeight:500, textAlign:'center', maxWidth:160 }}>
-                {sm1.compound.name}
-              </span>
-            )}
+            <span style={{ fontSize:10, color:'#9CA3AF', fontWeight:500, textAlign:'center', maxWidth:160, minHeight:14 }}>
+              {sm1.compound ? sm1.compound.name : ''}
+            </span>
           </div>
 
-          <div style={{ fontSize:24, color:'#9CA3AF', fontWeight:300, userSelect:'none' }}>+</div>
+          <div style={{ fontSize:24, color:'#9CA3AF', fontWeight:300, userSelect:'none', marginBottom:14 }}>+</div>
 
           {/* SM2 */}
-          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:5 }}>
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:5, minHeight:220 }}>
             <PreviewBox label="SM2 preview" smiles={sm2Smiles} formula={sm2.compound?.formula} />
-            {sm2.compound && (
-              <span style={{ fontSize:10, color:'#9CA3AF', fontWeight:500, textAlign:'center', maxWidth:160 }}>
-                {sm2.compound.name}
-              </span>
-            )}
+            <span style={{ fontSize:10, color:'#9CA3AF', fontWeight:500, textAlign:'center', maxWidth:160, minHeight:14 }}>
+              {sm2.compound ? sm2.compound.name : ''}
+            </span>
           </div>
 
           {/* Arrow + conditions */}
-          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, minWidth:110 }}>
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, minWidth:110, marginBottom:14 }}>
             <select value={solvent} onChange={e => setSolvent(e.target.value)} style={dropStyle}>
               {['MeOH','EtOH','DMF','DMSO','THF'].map(s => <option key={s}>{s}</option>)}
             </select>
@@ -1490,13 +1486,12 @@ function App() {
           </div>
 
           {/* Product */}
-          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:5 }}>
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:5, minHeight:220 }}>
             <PreviewBox label="Product preview" smiles={_isNoReaction ? '' : productSmiles} />
-            {_productLabel && (
-              <span style={{ fontSize:10, fontWeight:600, color: _productLabel.color, textAlign:'center' }}>
-                {_productLabel.text}
-              </span>
-            )}
+            <span style={{ fontSize:10, fontWeight:600, textAlign:'center', minHeight:14,
+              color: _productLabel ? _productLabel.color : 'transparent' }}>
+              {_productLabel ? _productLabel.text : ''}
+            </span>
           </div>
         </div>
 
