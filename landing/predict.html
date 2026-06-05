@@ -1584,6 +1584,27 @@ function App() {
         Chemdem · Squaric acid monoamide synthesis predictor · v0.5 · Backend: FastAPI /predict/full · DB: ChemInventory-Export.xlsx
       </div>
     </div>
+
+    {/* ── Floating Feedback Button ── */}
+    <a
+      href="https://form.jotform.com/261548090122047"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        position:'fixed', bottom:24, right:24, zIndex:9999,
+        background:'#000DFF', color:'#fff',
+        padding:'10px 18px', borderRadius:999,
+        fontSize:13, fontWeight:600,
+        textDecoration:'none',
+        boxShadow:'0 4px 16px rgba(0,13,255,0.3)',
+        display:'flex', alignItems:'center', gap:7,
+        transition:'background 0.2s, transform 0.15s',
+      }}
+      onMouseOver={e => { e.currentTarget.style.background='#111'; e.currentTarget.style.transform='scale(1.04)'; }}
+      onMouseOut={e => { e.currentTarget.style.background='#000DFF'; e.currentTarget.style.transform='scale(1)'; }}
+    >
+      💬 Feedback
+    </a>
   );
 }
 
