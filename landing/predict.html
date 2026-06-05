@@ -535,7 +535,8 @@ function AutocompleteInput({ label, value, onChange, onSelect, placeholder, role
             borderRadius: inputRadius, fontSize: 13,
             background: isOpen ? '#FFFFFF' : '#F9FAFB',
             outline: 'none', transition: 'border-color 0.15s, background 0.15s',
-            borderBottom: isOpen ? '1px solid #E9EDF5' : undefined,
+            borderBottomLeftRadius: isOpen ? 0 : inputRadius,
+            borderBottomRightRadius: isOpen ? 0 : inputRadius,
           }}
           onFocusCapture={e => {
             e.target.style.borderColor = '#2563EB';
