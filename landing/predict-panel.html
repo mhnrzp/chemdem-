@@ -1274,17 +1274,69 @@ function ResultPanel({ result }) {
 
 // ── Main App ───────────────────────────────────────────────────────────────────
 const BLANK = { iupac:'', cas:'', compound:null };
+const API_BASE = 'https://rzpccts-chemdem.hf.space';
 
 function App() {
-  const [tab,     setTab]     = useState('input');
-  const [sm1,     setSm1]     = useState(BLANK);
-  const [sm2,     setSm2]     = useState(BLANK);
-  const [solvent, setSolvent] = useState('EtOH');
-  const [temp,    setTemp]    = useState('RT');
-  const [result,  setResult]  = useState(null);
-  const [error,   setError]   = useState('');
-  const [loading, setLoading] = useState(false);
-  const [apiMode, setApiMode] = useState(true);  // false = offline fallback active
+  const [tab,           setTab]           = useState('input');
+  const [sm1,           setSm1]           = useState(BLANK);
+  const [sm2,           setSm2]           = useState(BLANK);
+  const [solvent,       setSolvent]       = useState('EtOH');
+  const [temp,          setTemp]          = useState('RT');
+  const [result,        setResult]        = useState(null);
+  const [error,         setError]         = useState('');
+  const [loading,       setLoading]       = useState(false);
+  const [apiMode,       setApiMode]       = useState(true);
+  const [backendStatus, setBackendStatus] = useState('checking'); // 'checking'|'waking'|'ready'|'offline'
+  const [wakeElapsed,   setWakeElapsed]   = useState(0);
+
+  // ── Backend wake-up check on mount ────────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    let pollTimer = null;
+    let tickTimer = null;
+    let elapsed = 0;
+
+    const check = async () => {
+      try {
+        const r = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(9000) });
+        if (r.ok && !cancelled) {
+          setBackendStatus('ready');
+          setApiMode(true);
+          clearInterval(pollTimer);
+          clearInterval(tickTimer);
+          return true;
+        }
+      } catch (_) {}
+      return false;
+    };
+
+    const startPolling = () => {
+      if (cancelled) return;
+      setBackendStatus('waking');
+      // Tick every second for the elapsed counter
+      tickTimer = setInterval(() => {
+        if (cancelled) return;
+        elapsed += 1;
+        setWakeElapsed(elapsed);
+        if (elapsed >= 210) {          // give up after 3.5 min
+          clearInterval(tickTimer);
+          clearInterval(pollTimer);
+          setBackendStatus('offline');
+          setApiMode(false);
+        }
+      }, 1000);
+      // Poll /health every 12 seconds
+      pollTimer = setInterval(check, 12000);
+    };
+
+    check().then(ok => { if (!ok && !cancelled) startPolling(); });
+
+    return () => {
+      cancelled = true;
+      clearInterval(pollTimer);
+      clearInterval(tickTimer);
+    };
+  }, []);
 
   const sm1Smiles     = sm1.compound?.smiles || '';
   const sm2Smiles     = sm2.compound?.smiles || '';
@@ -1321,8 +1373,6 @@ function App() {
           : productSmiles
             ? { text: '? Uncertain product', color: '#9CA3AF' }
             : { text: '✗ No reaction', color: '#DC2626' };
-
-  const API_BASE = 'https://rzpccts-chemdem.hf.space';
 
   const handleSubmit = async () => {
     setError('');
@@ -1388,6 +1438,51 @@ function App() {
 
   return (
     <div style={{ width:'100%', maxWidth:880 }}>
+
+      {/* ── Backend wake-up overlay ── */}
+      {(backendStatus === 'checking' || backendStatus === 'waking') && (
+        <div style={{
+          position:'fixed', inset:0, zIndex:10000,
+          background:'rgba(255,255,255,0.97)',
+          display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+          gap:20,
+        }}>
+          {/* Animated ring */}
+          <div style={{
+            width:56, height:56, borderRadius:'50%',
+            border:'3px solid #E5E7EB',
+            borderTop:'3px solid #000DFF',
+            animation:'spin 1s linear infinite',
+          }}/>
+          <div style={{ textAlign:'center', maxWidth:320 }}>
+            <p style={{ fontSize:17, fontWeight:600, color:'#111', marginBottom:6 }}>
+              {backendStatus === 'checking' ? 'Connecting to backend…' : 'Waking up the server…'}
+            </p>
+            <p style={{ fontSize:13, color:'#6B7280', lineHeight:1.6 }}>
+              {backendStatus === 'checking'
+                ? 'Checking if the prediction server is online.'
+                : 'The server was sleeping. This usually takes 1–2 minutes. Please wait…'}
+            </p>
+            {backendStatus === 'waking' && (
+              <p style={{ fontSize:12, color:'#9CA3AF', marginTop:10 }}>
+                ⏱ {Math.floor(wakeElapsed / 60)}:{String(wakeElapsed % 60).padStart(2,'0')} elapsed
+              </p>
+            )}
+          </div>
+          {backendStatus === 'waking' && (
+            <div style={{ display:'flex', gap:6 }}>
+              {[0,1,2,3,4].map(i => (
+                <div key={i} style={{
+                  width:6, height:6, borderRadius:'50%',
+                  background: (Math.floor(wakeElapsed / 2)) % 5 === i ? '#000DFF' : '#E5E7EB',
+                  transition:'background 0.4s',
+                }}/>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       <div style={{
         background:'#FFFFFF', borderRadius:20,
         boxShadow:'0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)',
