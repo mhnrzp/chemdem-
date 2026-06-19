@@ -1306,50 +1306,86 @@ function FlagButton({ result, pred, summ, conf }) {
   const [note, setNote] = React.useState('');
   const [sent, setSent] = React.useState(false);
 
-  const RECIPIENT = 'mahanerezapour4858.0026@gmail.com';
+  const RECIPIENT = 'k2433130@kingston.ac.uk';
 
-  const buildEmail = () => {
-    const amine   = result?.amine_validation?.canonical_smiles || pred?.amine_smiles || 'N/A';
+  const buildReport = () => {
+    const amine   = result?.amine_validation?.canonical_smiles  || pred?.amine_smiles    || 'N/A';
     const sq      = result?.squarate_validation?.canonical_smiles || 'CCOC1=C(OCC)C(=O)C1=O';
     const yld     = summ?.yield_display?.reported ?? pred?.yield_percent ?? 'N/A';
-    const match   = pred?.match_type   || 'N/A';
-    const status  = summ?.status       || 'N/A';
+    const match   = pred?.match_type    || 'N/A';
+    const status  = summ?.status        || 'N/A';
     const product = pred?.product_smiles || 'N/A';
-    const confLvl = conf?.level        || pred?.confidence || 'N/A';
+    const confLvl = conf?.level         || pred?.confidence || 'N/A';
     const now     = new Date().toLocaleString();
-    const subject = encodeURIComponent(`[Chemdem Flag] Prediction — ${amine.slice(0, 40)}`);
-    const body    = encodeURIComponent(
+    return { amine, sq, yld, match, status, product, confLvl, now };
+  };
+
+  const buildReportText = (r) =>
 `Chemdem — Flagged Prediction Report
 =====================================
-Flagged at: ${now}
+Flagged at: ${r.now}
 
 INPUTS
 ------
-SM1 (Squarate): ${sq}
-SM2 (Amine):    ${amine}
+SM1 (Squarate): ${r.sq}
+SM2 (Amine):    ${r.amine}
 
 PREDICTION
 ----------
-Status:          ${status}
-Predicted Yield: ${yld}%
-Product SMILES:  ${product}
-Match Type:      ${match}
-Confidence:      ${confLvl}
+Status:          ${r.status}
+Predicted Yield: ${r.yld}%
+Product SMILES:  ${r.product}
+Match Type:      ${r.match}
+Confidence:      ${r.confLvl}
 
 USER NOTE
 ---------
 ${note.trim() || '(no note provided)'}
 
 =====================================
-Submitted from chemdem.com/predict-panel`
-    );
-    return `mailto:${RECIPIENT}?subject=${subject}&body=${body}`;
+Submitted from chemdem.com/predict-panel`;
+
+  const downloadReport = (text, filename) => {
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const handleSend = () => {
-    window.location.href = buildEmail();
+    const r       = buildReport();
+    const text    = buildReportText(r);
+    const ts      = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const fname   = `chemdem-flag-${ts}.txt`;
+
+    // 1. Download the report file
+    downloadReport(text, fname);
+
+    // 2. Open mailto with the report in the body + instructions to attach the file
+    const subject = encodeURIComponent(`[Chemdem Flag] Prediction — ${r.amine.slice(0, 40)}`);
+    const body    = encodeURIComponent(
+`A Chemdem prediction has been flagged as incorrect.
+
+The full report file "${fname}" was downloaded to your device — please attach it to this email before sending.
+
+----- REPORT SUMMARY -----
+Flagged at:      ${r.now}
+SM2 (Amine):     ${r.amine}
+Status:          ${r.status}
+Predicted Yield: ${r.yld}%
+Match Type:      ${r.match}
+Confidence:      ${r.confLvl}
+
+USER NOTE: ${note.trim() || '(no note provided)'}
+--------------------------`
+    );
+    window.location.href = `mailto:${RECIPIENT}?subject=${subject}&body=${body}`;
+
     setSent(true);
-    setTimeout(() => { setSent(false); setOpen(false); setNote(''); }, 3000);
+    setTimeout(() => { setSent(false); setOpen(false); setNote(''); }, 4000);
   };
 
   return (
