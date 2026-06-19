@@ -1657,10 +1657,11 @@ function App() {
                 background: loading ? '#93C5FD' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                 color:'#fff', fontWeight:700, fontSize:14,
                 boxShadow: loading ? 'none' : '0 4px 14px rgba(37,99,235,0.35)',
-                transition:'all 0.2s', letterSpacing:0.2,
+                transition:'box-shadow 0.2s', letterSpacing:0.2,
                 cursor: loading ? 'not-allowed' : 'pointer',
                 display:'flex', alignItems:'center', gap:8,
                 position:'relative', overflow:'hidden',
+                minWidth:120,
               }}
             >
               {loading && (
@@ -1673,8 +1674,9 @@ function App() {
               {loading ? 'Predicting…' : 'Submit'}
               {!loading && (
                 <span className="submit-arrow" style={{
+                  position:'absolute', right:14,
                   display:'inline-flex', alignItems:'center',
-                  opacity:0, transform:'translateX(-6px)',
+                  opacity:0, transform:'translateX(6px)',
                   transition:'opacity 0.2s ease, transform 0.2s ease',
                 }}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
