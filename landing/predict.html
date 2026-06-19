@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chemdem — Reaction Predictor</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <script>
     // Auth guard — redirect to login if not authenticated
     if (sessionStorage.getItem('chemdem_auth') !== 'true') {
@@ -1583,28 +1584,27 @@ function App() {
       <div style={{ textAlign:'center', marginTop:16, fontSize:11, color:'#9CA3AF' }}>
         Chemdem · Squaric acid monoamide synthesis predictor · v0.5 · Backend: FastAPI /predict/full · DB: ChemInventory-Export.xlsx
       </div>
+      {/* ── Floating Feedback Button ── */}
+      <a
+        href="https://form.jotform.com/261548090122047"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          position:'fixed', bottom:24, right:24, zIndex:9999,
+          background:'#000DFF', color:'#fff',
+          padding:'10px 18px', borderRadius:999,
+          fontSize:13, fontWeight:600,
+          textDecoration:'none',
+          boxShadow:'0 4px 16px rgba(0,13,255,0.3)',
+          display:'flex', alignItems:'center', gap:7,
+          transition:'background 0.2s, transform 0.15s',
+        }}
+        onMouseOver={e => { e.currentTarget.style.background='#111'; e.currentTarget.style.transform='scale(1.04)'; }}
+        onMouseOut={e => { e.currentTarget.style.background='#000DFF'; e.currentTarget.style.transform='scale(1)'; }}
+      >
+        💬 Feedback
+      </a>
     </div>
-
-    {/* ── Floating Feedback Button ── */}
-    <a
-      href="https://form.jotform.com/261548090122047"
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        position:'fixed', bottom:24, right:24, zIndex:9999,
-        background:'#000DFF', color:'#fff',
-        padding:'10px 18px', borderRadius:999,
-        fontSize:13, fontWeight:600,
-        textDecoration:'none',
-        boxShadow:'0 4px 16px rgba(0,13,255,0.3)',
-        display:'flex', alignItems:'center', gap:7,
-        transition:'background 0.2s, transform 0.15s',
-      }}
-      onMouseOver={e => { e.currentTarget.style.background='#111'; e.currentTarget.style.transform='scale(1.04)'; }}
-      onMouseOut={e => { e.currentTarget.style.background='#000DFF'; e.currentTarget.style.transform='scale(1)'; }}
-    >
-      💬 Feedback
-    </a>
   );
 }
 

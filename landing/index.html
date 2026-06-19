@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chemdem | AI-Powered Chemical Reaction Prediction</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="description" content="Chemdem is an AI-powered chemistry platform that predicts reaction success, estimates yield, and helps researchers plan experiments before entering the lab." />
   <meta property="og:title" content="Chemdem | AI-Powered Chemical Reaction Prediction" />
   <meta property="og:description" content="Predict chemical reaction outcomes before you react — powered by real squarate-amide data and RDKit." />
@@ -195,6 +196,15 @@
     .nav-link { position: relative; z-index: 1; text-decoration: none; color: #374151; padding: 8px 20px; border-radius: 999px; transition: color 0.2s ease; cursor: pointer; }
     .nav-link.active { color: #fff; }
 
+    /* Remove default Chrome focus outline on nav/login buttons, keep keyboard accessibility */
+    .nav-link, .login-btn, .hamburger-btn { outline: none; box-shadow: none; }
+    .nav-link:focus, .login-btn:focus, .hamburger-btn:focus { outline: none; box-shadow: none; }
+    .nav-link:focus-visible, .login-btn:focus-visible, .hamburger-btn:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.85);
+      outline-offset: 3px;
+      border-radius: 999px;
+    }
+
     .yield-row { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
 
     @keyframes fadeInLeft {
@@ -332,6 +342,14 @@
       border-radius: 12px;
       transition: color 0.15s, background 0.15s;
     }
+    .mobile-nav-links a, .menu-close-btn { outline: none; box-shadow: none; }
+    .mobile-nav-links a:focus, .menu-close-btn:focus { outline: none; box-shadow: none; }
+    .mobile-nav-links a:focus-visible, .menu-close-btn:focus-visible {
+      outline: 2px solid rgba(0, 13, 255, 0.55);
+      outline-offset: 2px;
+      border-radius: 12px;
+    }
+
     .mobile-nav-links a:hover, .mobile-nav-links a:active {
       color: #000DFF;
       background: #f0f1ff;
