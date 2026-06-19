@@ -133,7 +133,7 @@
   <script>
     // Check if already logged in
     if (sessionStorage.getItem('chemdem_auth') === 'true') {
-      window.location.href = '/predict.html';
+      window.location.href = '/predict-panel.html';
     }
 
     function handleLogin(e) {
@@ -144,7 +144,7 @@
 
       if (user === 'chemdem' && pass === 'wrenlab2026') {
         sessionStorage.setItem('chemdem_auth', 'true');
-        window.location.href = '/predict.html';
+        window.location.href = '/predict-panel.html';
       } else {
         err.style.display = 'block';
         document.getElementById('password').value = '';
