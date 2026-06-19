@@ -1295,8 +1295,10 @@ function App() {
     let pollTimer = null;
     let tickTimer = null;
     let elapsed = 0;
+    const testMode = new URLSearchParams(window.location.search).has('wake');
 
     const check = async () => {
+      if (testMode) return false; // ?wake param → always simulate sleeping
       try {
         const r = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(9000) });
         if (r.ok && !cancelled) {
