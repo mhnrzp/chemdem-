@@ -1651,6 +1651,7 @@ function App() {
             <button
               onClick={handleSubmit}
               disabled={loading}
+              className="submit-btn"
               style={{
                 padding:'11px 32px', borderRadius:11, border:'none',
                 background: loading ? '#93C5FD' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
@@ -1659,9 +1660,8 @@ function App() {
                 transition:'all 0.2s', letterSpacing:0.2,
                 cursor: loading ? 'not-allowed' : 'pointer',
                 display:'flex', alignItems:'center', gap:8,
+                position:'relative', overflow:'hidden',
               }}
-              onMouseEnter={e => { if (!loading) e.currentTarget.style.boxShadow='0 6px 20px rgba(37,99,235,0.45)'; }}
-              onMouseLeave={e => { if (!loading) e.currentTarget.style.boxShadow='0 4px 14px rgba(37,99,235,0.35)'; }}
             >
               {loading && (
                 <span style={{
@@ -1671,9 +1671,28 @@ function App() {
                 }}/>
               )}
               {loading ? 'Predicting…' : 'Submit'}
+              {!loading && (
+                <span className="submit-arrow" style={{
+                  display:'inline-flex', alignItems:'center',
+                  opacity:0, transform:'translateX(-6px)',
+                  transition:'opacity 0.2s ease, transform 0.2s ease',
+                }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </span>
+              )}
             </button>
           </div>
-          <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+          <style>{`
+            @keyframes spin { to { transform: rotate(360deg); } }
+            .submit-btn:not(:disabled):hover { box-shadow: 0 6px 20px rgba(37,99,235,0.45) !important; }
+            .submit-btn:not(:disabled):hover .submit-arrow {
+              opacity: 1 !important;
+              transform: translateX(0) !important;
+            }
+          `}</style>
         </div>
 
       </div>
