@@ -1008,7 +1008,7 @@ function ResultPanel({ result }) {
 
       {/* ── Hero: Status + Yield ─────────────────────────────────────────── */}
       <div style={{ padding:'18px 22px', borderBottom:'1px solid #F3F4F6' }}>
-        {/* Status */}
+        {/* Status row + flag button */}
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:14 }}>
           <span style={{ fontSize:13, fontWeight:600, color:'#374151', minWidth:118 }}>Product Status:</span>
           <span style={{
@@ -1016,6 +1016,9 @@ function ResultPanel({ result }) {
             background:statusBg, color:statusClr,
             border:`1.5px solid ${statusClr}44`,
           }}>{statusOk ? '✓' : status.startsWith('May') ? '~' : '✗'} {status}</span>
+          <div style={{ marginLeft:'auto' }}>
+            <FlagButton result={result} pred={pred} summ={summ} conf={conf} />
+          </div>
         </div>
 
         {/* Yield bar */}
@@ -1292,9 +1295,6 @@ function ResultPanel({ result }) {
         </Collapsible>
       </div>
 
-      {/* ── Flag this prediction ─────────────────────────────────────────── */}
-      <FlagButton result={result} pred={pred} summ={summ} conf={conf} />
-
       <div style={{ height:12 }} />
     </div>
   );
@@ -1302,26 +1302,23 @@ function ResultPanel({ result }) {
 
 // ── Flag Button ────────────────────────────────────────────────────────────────
 function FlagButton({ result, pred, summ, conf }) {
-  const [open,   setOpen]   = React.useState(false);
-  const [note,   setNote]   = React.useState('');
-  const [sent,   setSent]   = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [note, setNote] = React.useState('');
+  const [sent, setSent] = React.useState(false);
 
   const RECIPIENT = 'mahanerezapour4858.0026@gmail.com';
 
   const buildEmail = () => {
-    const amine   = result?.amine_validation?.canonical_smiles  || pred?.amine_smiles  || 'N/A';
+    const amine   = result?.amine_validation?.canonical_smiles || pred?.amine_smiles || 'N/A';
     const sq      = result?.squarate_validation?.canonical_smiles || 'CCOC1=C(OCC)C(=O)C1=O';
     const yld     = summ?.yield_display?.reported ?? pred?.yield_percent ?? 'N/A';
-    const match   = pred?.match_type  || 'N/A';
-    const status  = summ?.status      || 'N/A';
+    const match   = pred?.match_type   || 'N/A';
+    const status  = summ?.status       || 'N/A';
     const product = pred?.product_smiles || 'N/A';
     const confLvl = conf?.level        || pred?.confidence || 'N/A';
     const now     = new Date().toLocaleString();
-
-    const subject = encodeURIComponent(
-      `[Chemdem Flag] Prediction — ${amine.slice(0, 40)}`
-    );
-    const body = encodeURIComponent(
+    const subject = encodeURIComponent(`[Chemdem Flag] Prediction — ${amine.slice(0, 40)}`);
+    const body    = encodeURIComponent(
 `Chemdem — Flagged Prediction Report
 =====================================
 Flagged at: ${now}
@@ -1333,20 +1330,19 @@ SM2 (Amine):    ${amine}
 
 PREDICTION
 ----------
-Status:         ${status}
+Status:          ${status}
 Predicted Yield: ${yld}%
-Product SMILES: ${product}
-Match Type:     ${match}
-Confidence:     ${confLvl}
+Product SMILES:  ${product}
+Match Type:      ${match}
+Confidence:      ${confLvl}
 
 USER NOTE
 ---------
 ${note.trim() || '(no note provided)'}
 
 =====================================
-This flag was submitted from chemdem.com/predict-panel`
+Submitted from chemdem.com/predict-panel`
     );
-
     return `mailto:${RECIPIENT}?subject=${subject}&body=${body}`;
   };
 
@@ -1356,83 +1352,91 @@ This flag was submitted from chemdem.com/predict-panel`
     setTimeout(() => { setSent(false); setOpen(false); setNote(''); }, 3000);
   };
 
-  if (sent) {
-    return (
-      <div style={{ padding:'10px 22px 14px', display:'flex', justifyContent:'center' }}>
-        <span style={{ fontSize:12, color:'#16A34A', fontWeight:600 }}>
-          ✓ Flag sent — your email client should have opened. Thank you!
-        </span>
-      </div>
-    );
-  }
-
   return (
-    <div style={{ padding:'0 22px 14px' }}>
-      {!open ? (
-        <button
-          onClick={() => setOpen(true)}
+    <>
+      {/* Compact flag icon button — sits in the status header row */}
+      <button
+        onClick={() => setOpen(true)}
+        title="Flag this prediction as incorrect"
+        style={{
+          display:'flex', alignItems:'center', gap:5,
+          fontSize:11, fontWeight:600,
+          color: sent ? '#16A34A' : '#9CA3AF',
+          background:'none', border:'1px solid #E5E7EB',
+          borderRadius:8, padding:'5px 10px',
+          cursor:'pointer', transition:'border-color 0.2s, color 0.2s',
+          whiteSpace:'nowrap',
+        }}
+        onMouseEnter={e => { if (!sent) { e.currentTarget.style.borderColor='#FCA5A5'; e.currentTarget.style.color='#EF4444'; }}}
+        onMouseLeave={e => { if (!sent) { e.currentTarget.style.borderColor='#E5E7EB'; e.currentTarget.style.color='#9CA3AF'; }}}
+      >
+        {sent ? '✓ Sent' : <>🚩 Flag</>}
+      </button>
+
+      {/* Modal overlay */}
+      {open && !sent && (
+        <div
+          onClick={e => { if (e.target === e.currentTarget) { setOpen(false); setNote(''); }}}
           style={{
-            display:'flex', alignItems:'center', gap:6,
-            fontSize:11, color:'#9CA3AF', background:'none',
-            border:'1px dashed #E5E7EB', borderRadius:8,
-            padding:'6px 14px', cursor:'pointer',
-            transition:'border-color 0.2s, color 0.2s',
+            position:'fixed', inset:0, zIndex:20000,
+            background:'rgba(0,0,0,0.35)',
+            display:'flex', alignItems:'center', justifyContent:'center',
+            padding:20,
           }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor='#F87171'; e.currentTarget.style.color='#EF4444'; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor='#E5E7EB'; e.currentTarget.style.color='#9CA3AF'; }}
         >
-          🚩 Flag this prediction as incorrect
-        </button>
-      ) : (
-        <div style={{
-          border:'1px solid #FECACA', borderRadius:10,
-          background:'#FFF5F5', padding:'12px 14px',
-        }}>
-          <p style={{ fontSize:12, fontWeight:700, color:'#DC2626', margin:'0 0 8px' }}>
-            🚩 Flag this prediction
-          </p>
-          <p style={{ fontSize:11, color:'#6B7280', margin:'0 0 8px', lineHeight:1.5 }}>
-            Describe what was wrong — incorrect yield, wrong product, reaction that should fail, etc.
-            This will open your email with all prediction details pre-filled.
-          </p>
-          <textarea
-            value={note}
-            onChange={e => setNote(e.target.value)}
-            placeholder="e.g. The actual yield was 15%, not 72%. The amine was too hindered."
-            rows={3}
-            style={{
-              width:'100%', boxSizing:'border-box', resize:'vertical',
-              fontSize:12, padding:'8px 10px', borderRadius:8,
-              border:'1px solid #FECACA', outline:'none',
-              fontFamily:'inherit', color:'#111827',
-              background:'#fff', lineHeight:1.5,
-            }}
-          />
-          <div style={{ display:'flex', gap:8, marginTop:8, justifyContent:'flex-end' }}>
-            <button
-              onClick={() => { setOpen(false); setNote(''); }}
+          <div style={{
+            background:'#fff', borderRadius:14, width:'100%', maxWidth:440,
+            boxShadow:'0 20px 60px rgba(0,0,0,0.2)',
+            padding:'22px 24px',
+          }}>
+            <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12 }}>
+              <span style={{ fontSize:18 }}>🚩</span>
+              <span style={{ fontSize:15, fontWeight:700, color:'#111827' }}>Flag this prediction</span>
+              <button
+                onClick={() => { setOpen(false); setNote(''); }}
+                style={{ marginLeft:'auto', background:'none', border:'none', fontSize:18, color:'#9CA3AF', cursor:'pointer', lineHeight:1 }}
+              >×</button>
+            </div>
+            <p style={{ fontSize:12, color:'#6B7280', margin:'0 0 12px', lineHeight:1.6 }}>
+              What was wrong? Your note + all prediction details will be sent directly to the Chemdem team.
+            </p>
+            <textarea
+              value={note}
+              onChange={e => setNote(e.target.value)}
+              autoFocus
+              placeholder="e.g. The actual yield was 15%, not 72%. The product structure looks wrong."
+              rows={4}
               style={{
-                fontSize:11, padding:'6px 14px', borderRadius:7,
-                border:'1px solid #E5E7EB', background:'#fff',
-                color:'#6B7280', cursor:'pointer',
+                width:'100%', boxSizing:'border-box', resize:'vertical',
+                fontSize:12, padding:'10px 12px', borderRadius:9,
+                border:'1.5px solid #E5E7EB', outline:'none',
+                fontFamily:'inherit', color:'#111827', lineHeight:1.6,
               }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSend}
-              style={{
-                fontSize:11, padding:'6px 16px', borderRadius:7,
-                border:'none', background:'#DC2626',
-                color:'#fff', fontWeight:700, cursor:'pointer',
-              }}
-            >
-              Send Flag →
-            </button>
+              onFocus={e => e.target.style.borderColor='#FCA5A5'}
+              onBlur={e  => e.target.style.borderColor='#E5E7EB'}
+            />
+            <div style={{ display:'flex', gap:8, marginTop:12, justifyContent:'flex-end' }}>
+              <button
+                onClick={() => { setOpen(false); setNote(''); }}
+                style={{
+                  fontSize:12, padding:'8px 18px', borderRadius:8,
+                  border:'1px solid #E5E7EB', background:'#fff',
+                  color:'#6B7280', cursor:'pointer', fontWeight:500,
+                }}
+              >Cancel</button>
+              <button
+                onClick={handleSend}
+                style={{
+                  fontSize:12, padding:'8px 20px', borderRadius:8,
+                  border:'none', background:'#DC2626',
+                  color:'#fff', fontWeight:700, cursor:'pointer',
+                }}
+              >Send Flag →</button>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
