@@ -65,25 +65,155 @@ def _paper_for_row(row) -> str:
     return "paper_2" if row[1] in _PAPER2_SUBS else "paper_1"
 
 
+# Substituent electronic character lookup
+_EWG = {"F", "Cl", "Br", "CF3", "NO2", "CN", "fluoro", "chloro", "bromo",
+        "trifluoromethyl", "nitro", "cyano", "F3C", "fluoromethyl"}
+_EDG = {"OMe", "Me", "methyl", "methoxy", "NMe2", "OH", "tBu",
+        "dimethylamino", "hydroxy", "tert-butyl", "ethyl", "OEt"}
+
+
+def _generate_rationale(at: str, sub: str, pos: str,
+                        temp_i: int, cat_i: int, yld: float,
+                        match_tier: str, sim: float) -> str:
+    parts = []
+
+    # ── 1. Outcome sentence ──────────────────────────────────────────────────
+    sub_norm = sub.lower() if sub else "none"
+    pos_str  = f"{pos}-substituted " if pos and pos != "none" else ""
+    sub_str  = f"{sub} " if sub and sub != "none" else ""
+
+    if yld == 0:
+        outcome = "did not react (0% yield, confirmed hard fail)"
+    elif yld >= 70:
+        outcome = f"gave excellent yield ({yld:.0f}%)"
+    elif yld >= 50:
+        outcome = f"gave good yield ({yld:.0f}%)"
+    elif yld >= 30:
+        outcome = f"gave moderate yield ({yld:.0f}%)"
+    else:
+        outcome = f"gave low yield ({yld:.0f}%)"
+
+    temp_str = "at reflux (EtOH, ~78 °C)" if temp_i else "at room temperature"
+    cat_str  = "with Zn(OTf)₂ (10–13 mol%)" if cat_i else "without Lewis acid catalyst"
+
+    parts.append(
+        f"The {pos_str}{sub_str}{at} {outcome} {temp_str} {cat_str} in EtOH."
+    )
+
+    # ── 2. Amine-type mechanistic note ───────────────────────────────────────
+    if at == "aniline":
+        if cat_i:
+            parts.append(
+                "Anilines are poor nucleophiles due to lone-pair delocalisation into the aromatic ring; "
+                "Zn(OTf)₂ activates the squarate electrophile to enable productive mono-addition."
+            )
+        else:
+            parts.append(
+                "Aniline nitrogen is deactivated by resonance with the arene; "
+                "unusually, this substrate reacted without Lewis acid activation."
+            )
+    elif at == "benzylamine":
+        parts.append(
+            "Benzylic amines are significantly more nucleophilic than anilines "
+            "because the lone pair is not conjugated into the ring, "
+            "allowing reaction without Lewis acid catalyst."
+        )
+    elif at == "heterocyclic":
+        parts.append(
+            "Cyclic secondary amines react via N–H mono-addition to one ester of "
+            "diethyl squarate; ring strain and basicity of the nitrogen influence rate."
+        )
+
+    # ── 3. Substituent electronic effects ────────────────────────────────────
+    is_ewg = sub_norm in {s.lower() for s in _EWG}
+    is_edg = sub_norm in {s.lower() for s in _EDG}
+
+    if yld == 0 and is_ewg:
+        parts.append(
+            f"The strongly electron-withdrawing {sub} group deactivates the amine sufficiently "
+            "to prevent reaction entirely — a confirmed hard fail in the Wren dataset."
+        )
+    elif is_ewg:
+        parts.append(
+            f"The electron-withdrawing {sub} group reduces nucleophilicity at nitrogen "
+            "but does not fully suppress reactivity; yield is lower than electron-neutral analogues."
+        )
+    elif is_edg:
+        parts.append(
+            f"The electron-donating {sub} group increases electron density at nitrogen, "
+            "enhancing nucleophilicity and contributing to the higher yield."
+        )
+
+    # ── 4. Position (steric / resonance) effect ───────────────────────────────
+    if pos == "para":
+        parts.append(
+            "Para substitution avoids steric interaction with the reacting amine and "
+            "transmits electronic effects most efficiently through resonance — "
+            "typically the highest-yielding regioisomer in this series."
+        )
+    elif pos == "meta":
+        parts.append(
+            "Meta substitution acts primarily through inductive pathways; "
+            "yields are generally intermediate between para and ortho analogues."
+        )
+    elif pos == "ortho":
+        if yld == 0:
+            parts.append(
+                "Ortho substitution places the group adjacent to the amine, causing "
+                "severe steric clash that completely prevents nucleophilic addition to squarate."
+            )
+        else:
+            parts.append(
+                "Ortho substitution creates steric congestion near the amine, "
+                "reducing but not eliminating reactivity."
+            )
+
+    # ── 5. Match quality / predictive relevance ───────────────────────────────
+    if match_tier == "exact":
+        parts.append(
+            "This is an experimentally confirmed result for the exact same compound "
+            "— yield is directly reported in the cited paper."
+        )
+    elif match_tier == "high":
+        parts.append(
+            f"Structural similarity to your query is high (Tanimoto {sim:.2f}); "
+            "this reference is strongly predictive of expected outcome."
+        )
+    elif match_tier == "medium":
+        parts.append(
+            f"Moderate structural similarity (Tanimoto {sim:.2f}); "
+            "electronic and steric trends should transfer, but yield may differ by ±15–20%."
+        )
+    else:
+        parts.append(
+            f"Lower structural similarity (Tanimoto {sim:.2f}); "
+            "treat as directional guidance — conditions and general reactivity pattern apply."
+        )
+
+    return " ".join(parts)
+
+
 def _row_to_ref(row, sim: float, match_tier: str) -> dict:
     """Convert a DATASET row to a structured reference dict."""
     at, sub, pos, temp_i, cat_i, yld = row
     paper_key = _paper_for_row(row)
     src = _LOCAL_SOURCES[paper_key]
     return {
-        "amine_type":   at,
-        "substituent":  sub,
-        "position":     pos,
-        "temperature":  "reflux" if temp_i else "r.t.",
-        "catalyst":     "Zn(OTf)₂ (10–13 mol%)" if cat_i else "none",
+        "amine_type":    at,
+        "substituent":   sub,
+        "position":      pos,
+        "temperature":   "reflux" if temp_i else "r.t.",
+        "catalyst":      "Zn(OTf)₂ (10–13 mol%)" if cat_i else "none",
         "yield_percent": yld,
-        "solvent":      "EtOH",   # all training data used EtOH
-        "match_tier":   match_tier,   # 'exact' | 'high' | 'medium' | 'low'
-        "similarity":   round(sim, 3),
+        "solvent":       "EtOH",
+        "match_tier":    match_tier,
+        "similarity":    round(sim, 3),
+        "rationale":     _generate_rationale(at, sub, pos, temp_i, cat_i, yld, match_tier, sim),
         "source": {
-            "label":    src["name"],
-            "type":     src["type"],
-            "doi":      src["doi"],
+            "label": src["name"],
+            "type":  src["type"],
+            "doi":   src["doi"],
+            "url":   src.get("url"),
         },
     }
 

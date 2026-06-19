@@ -1174,42 +1174,67 @@ function ResultPanel({ result }) {
               External sources (ORD, USPTO) are not yet connected.
             </p>
           ) : (
-            <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
-              {allRefs.slice(0,6).map((r, i) => (
-                <div key={i} style={{
-                  display:'flex', gap:8, alignItems:'center', padding:'6px 10px',
-                  borderRadius:8, background: r.match_tier==='exact' ? '#ECFDF5' : '#F9FAFB',
-                  border:`1px solid ${r.match_tier==='exact' ? '#A7F3D0' : '#E5E7EB'}`,
-                }}>
-                  <div style={{ flex:1, minWidth:0 }}>
-                    <span style={{ fontSize:11, fontWeight:600, color:'#111827' }}>
-                      {r.amine_type}
-                      {r.substituent !== 'none' ? ` · ${r.substituent}` : ''}
-                      {r.position   !== 'none' ? ` (${r.position})` : ''}
-                    </span>
-                    <span style={{ fontSize:10, color:'#9CA3AF', marginLeft:8 }}>
-                      {r.temperature} · {r.catalyst !== 'none' ? r.catalyst : 'no catalyst'} · {r.solvent}
-                    </span>
-                  </div>
-                  <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:3, flexShrink:0 }}>
-                    <span style={{
-                      fontSize:13, fontWeight:800,
-                      color: r.yield_percent >= 70 ? '#16A34A' : r.yield_percent >= 40 ? '#D97706' : '#DC2626',
-                    }}>
-                      {r.yield_percent}%
-                    </span>
-                    <div style={{ display:'flex', gap:4 }}>
-                      {r.match_tier === 'exact' && (
-                        <span style={{ fontSize:9, fontWeight:700, color:'#065F46', background:'#D1FAE5', padding:'1px 5px', borderRadius:4 }}>EXACT</span>
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {allRefs.slice(0,6).map((r, i) => {
+                const yldClr = r.yield_percent >= 70 ? '#16A34A' : r.yield_percent >= 40 ? '#D97706' : '#DC2626';
+                const bgClr  = r.match_tier === 'exact' ? '#F0FDF4' : '#FAFAFA';
+                const bdClr  = r.match_tier === 'exact' ? '#BBF7D0' : '#E5E7EB';
+                return (
+                  <div key={i} style={{
+                    borderRadius:10, background:bgClr,
+                    border:`1px solid ${bdClr}`,
+                    overflow:'hidden',
+                  }}>
+                    {/* Header row */}
+                    <div style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 12px', borderBottom:`1px solid ${bdClr}` }}>
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <span style={{ fontSize:12, fontWeight:700, color:'#111827' }}>
+                          {r.amine_type}
+                          {r.substituent && r.substituent !== 'none' ? ` · ${r.substituent}` : ''}
+                          {r.position    && r.position    !== 'none' ? ` (${r.position})` : ''}
+                        </span>
+                        <span style={{ fontSize:10, color:'#9CA3AF', marginLeft:8 }}>
+                          {r.temperature} · {r.catalyst !== 'none' ? r.catalyst : 'no catalyst'} · {r.solvent}
+                        </span>
+                      </div>
+                      <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:3, flexShrink:0 }}>
+                        <span style={{ fontSize:14, fontWeight:800, color:yldClr }}>
+                          {r.yield_percent > 0 ? `${r.yield_percent}%` : 'No rxn'}
+                        </span>
+                        <div style={{ display:'flex', gap:4 }}>
+                          {r.match_tier === 'exact' && (
+                            <span style={{ fontSize:9, fontWeight:700, color:'#065F46', background:'#D1FAE5', padding:'1px 5px', borderRadius:4 }}>EXACT</span>
+                          )}
+                          <span style={{ fontSize:9, color:'#6B7280', background:'#F3F4F6', padding:'1px 6px', borderRadius:4 }}>
+                            {Math.round(r.similarity * 100)}% sim
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Rationale */}
+                    {r.rationale && (
+                      <div style={{ padding:'8px 12px', fontSize:11, color:'#374151', lineHeight:1.65, borderBottom:`1px solid ${bdClr}` }}>
+                        {r.rationale}
+                      </div>
+                    )}
+                    {/* Citation */}
+                    <div style={{ padding:'5px 12px', display:'flex', alignItems:'center', gap:6 }}>
+                      <span style={{ fontSize:10, color:'#9CA3AF' }}>📄</span>
+                      {r.source?.url ? (
+                        <a href={r.source.url} target="_blank" rel="noopener noreferrer"
+                          style={{ fontSize:10, color:'#2563EB', textDecoration:'none', fontWeight:500 }}>
+                          {r.source.label}
+                        </a>
+                      ) : (
+                        <span style={{ fontSize:10, color:'#6B7280', fontWeight:500 }}>{r.source?.label}</span>
                       )}
-                      <SourceBadge label="Internal" />
+                      {r.source?.doi && r.source.doi !== '10.1055/a-XXXX-XXXX' && (
+                        <span style={{ fontSize:10, color:'#9CA3AF' }}>· DOI: {r.source.doi}</span>
+                      )}
                     </div>
                   </div>
-                </div>
-              ))}
-              <p style={{ fontSize:10, color:'#9CA3AF', margin:'4px 0 0', fontStyle:'italic' }}>
-                Source: {refs?.local?.sources?.join('; ') || 'Internal dataset'}
-              </p>
+                );
+              })}
             </div>
           )}
         </Collapsible>
