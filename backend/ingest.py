@@ -52,8 +52,35 @@ def convert_pdf_bytes(filename: str, data: bytes) -> dict:
     }
 
 
+def _title(text: str) -> str:
+    for line in text.splitlines():
+        s = line.strip().lstrip("#").strip().strip("*").strip()
+        if len(s) > 3:
+            return s[:140]
+    return "Untitled paper"
+
+
+def _abstract(text: str) -> str:
+    # first chunk of prose after the title, markdown markers lightly stripped
+    lines = [l.strip() for l in text.splitlines()]
+    body = []
+    seen_title = False
+    for l in lines:
+        if not l:
+            continue
+        if not seen_title:
+            seen_title = True
+            continue
+        if l.startswith("|") or l.startswith("==>") or l.startswith("!["):
+            continue
+        body.append(l.lstrip("#").strip())
+        if sum(len(x) for x in body) > 360:
+            break
+    return " ".join(body)[:380]
+
+
 def list_papers() -> list:
-    """List converted markdown files already in data/papers/."""
+    """List converted markdown files already in the papers dir, with previews."""
     if not os.path.isdir(PAPERS):
         return []
     out = []
@@ -67,9 +94,26 @@ def list_papers() -> list:
             text = ""
         out.append({
             "md_filename": name,
+            "title": _title(text),
+            "abstract": _abstract(text),
             "words": len(text.split()),
             "table_rows": text.count("|---"),
+            "has_pdf": os.path.exists(os.path.join(PAPERS, name[:-3] + ".pdf")),
             "modified": datetime.datetime.fromtimestamp(
                 os.path.getmtime(path)).isoformat(timespec="seconds"),
         })
     return out
+
+
+def get_markdown(md_filename: str) -> str | None:
+    """Return the full markdown text of a converted paper, or None if missing."""
+    name = os.path.basename(md_filename or "")
+    if not name.lower().endswith(".md"):
+        name += ".md"
+    path = os.path.join(PAPERS, name)
+    if not os.path.isfile(path):
+        return None
+    try:
+        return open(path, encoding="utf-8").read()
+    except Exception:
+        return None

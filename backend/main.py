@@ -301,8 +301,17 @@ async def ingest_pdf(file: UploadFile = File(...)):
 
 @app.get("/ingest/list", tags=["ingest"])
 def ingest_list():
-    """List the Markdown files already converted into data/papers/."""
+    """List the converted papers with title + abstract previews."""
     return {"papers": _ingest.list_papers()}
+
+
+@app.get("/ingest/md/{md_filename}", tags=["ingest"])
+def ingest_markdown(md_filename: str):
+    """Return the full Markdown text of one converted paper (for the viewer)."""
+    md = _ingest.get_markdown(md_filename)
+    if md is None:
+        raise HTTPException(status_code=404, detail="Paper not found.")
+    return {"md_filename": md_filename, "markdown": md}
 
 
 @app.get("/health", tags=["utility"])
