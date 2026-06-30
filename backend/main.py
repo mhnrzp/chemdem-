@@ -1,8 +1,10 @@
 # main.py — FastAPI backend for Chemdem  v3.0
 # Run: uvicorn main:app --reload --port 8000
 
+import os
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional
 
@@ -312,6 +314,16 @@ def ingest_markdown(md_filename: str):
     if md is None:
         raise HTTPException(status_code=404, detail="Paper not found.")
     return {"md_filename": md_filename, "markdown": md}
+
+
+@app.get("/ingest/file/{md_filename}", tags=["ingest"])
+def ingest_file(md_filename: str):
+    """Download a stored paper — the original PDF if kept, else the .md."""
+    path = _ingest.file_path(md_filename)
+    if not path:
+        raise HTTPException(status_code=404, detail="File not found.")
+    media = "application/pdf" if path.lower().endswith(".pdf") else "text/markdown"
+    return FileResponse(path, media_type=media, filename=os.path.basename(path))
 
 
 @app.get("/health", tags=["utility"])

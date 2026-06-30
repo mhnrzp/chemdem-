@@ -105,6 +105,19 @@ def list_papers() -> list:
     return out
 
 
+def file_path(md_filename: str) -> str | None:
+    """Resolve a download path for a paper: the original PDF if kept, else the .md."""
+    name = os.path.basename(md_filename or "")
+    stem = name[:-3] if name.lower().endswith(".md") else name
+    pdf = os.path.join(PAPERS, stem + ".pdf")
+    md = os.path.join(PAPERS, stem + ".md")
+    if os.path.isfile(pdf):
+        return pdf
+    if os.path.isfile(md):
+        return md
+    return None
+
+
 def get_markdown(md_filename: str) -> str | None:
     """Return the full markdown text of a converted paper, or None if missing."""
     name = os.path.basename(md_filename or "")
