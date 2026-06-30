@@ -4,3 +4,5 @@ pydantic
 python-dotenv
 rdkit
 httpx
+python-multipart
+pymupdf4llm

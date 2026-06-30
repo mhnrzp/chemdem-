@@ -1,7 +1,7 @@
 # main.py — FastAPI backend for Chemdem  v3.0
 # Run: uvicorn main:app --reload --port 8000
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
@@ -10,6 +10,7 @@ from model import predict as _legacy_predict, predict_from_smiles
 from lookup import validate_compound
 from reference_search import search_all_references
 from side_products import predict_side_products
+import ingest as _ingest
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
@@ -278,6 +279,30 @@ def get_options():
         "positions":    ["ortho", "meta", "para", "none"],
         "temperatures": ["r.t.", "reflux"],
     }
+
+
+@app.post("/ingest/pdf", tags=["ingest"])
+async def ingest_pdf(file: UploadFile = File(...)):
+    """
+    Accept an uploaded article PDF, convert it to Markdown, and save both into
+    data/papers/. Returns metadata + a short preview for the drop-zone panel.
+    """
+    name = (file.filename or "").lower()
+    if not name.endswith(".pdf"):
+        raise HTTPException(status_code=422, detail="Please upload a PDF file.")
+    data = await file.read()
+    if not data:
+        raise HTTPException(status_code=422, detail="Empty file.")
+    try:
+        return _ingest.convert_pdf_bytes(file.filename, data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Conversion failed: {e}")
+
+
+@app.get("/ingest/list", tags=["ingest"])
+def ingest_list():
+    """List the Markdown files already converted into data/papers/."""
+    return {"papers": _ingest.list_papers()}
 
 
 @app.get("/health", tags=["utility"])
